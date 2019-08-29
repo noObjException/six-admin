@@ -7,13 +7,13 @@ import Header from "./header";
 
 const { Content } = Layout
 
-const DefaultLayout: FC = (props) => {
+const DefaultLayout: FC = () => {
 
   return (
     <Router>
       <Layout>
         <Route path='' component={Sider} />
-        <Layout>
+        <Layout className='h-screen overflow-hidden'>
           <Route path='' component={Header} />
 
           <Content>

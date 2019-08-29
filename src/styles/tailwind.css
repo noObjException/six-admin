@@ -3256,6 +3256,10 @@ img, svg {
   min-height: 100vh;
 }
 
+.min-h-content {
+  min-height: 90vh;
+}
+
 .min-w-0 {
   min-width: 0;
 }
@@ -7935,6 +7939,10 @@ img, svg {
 
   .sm\:min-h-screen {
     min-height: 100vh;
+  }
+
+  .sm\:min-h-content {
+    min-height: 90vh;
   }
 
   .sm\:min-w-0 {
