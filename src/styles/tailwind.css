@@ -622,6 +622,11 @@ video {
   }
 }
 
+img, svg {
+  display: inline;
+  vertical-align: baseline;
+}
+
 .fixed-screen {
   position: fixed;
   top: 0;

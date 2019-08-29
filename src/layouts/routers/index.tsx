@@ -1,9 +1,11 @@
-import React, { FC, ReactNode } from "react";
-import { BrowserRouter as Router, Route, RouteComponentProps } from "react-router-dom";
+import React, { FC } from "react";
+import { Route, RouteComponentProps } from "react-router-dom";
 import { StaticContext } from "react-router";
+import Products from "pages/products";
+import Users from "pages/users";
 
 const Index = () => <div>index</div>
-const Home = () => <div>Home</div>
+
 interface IRoute {
   path: string,
   name?: string,
@@ -13,16 +15,17 @@ interface IRoute {
 
 const routes: IRoute[] = [
   { path: '/', component: Index },
-  { path: '/home', component: Home },
+  { path: '/products', component: Products },
+  { path: '/users', component: Users },
 ]
 
 const Routes: FC = () => {
   return (
-    <Router>
+    <>
       {routes.map(({ path, exact = true, component }, key) => (
         <Route path={path} exact={exact} component={component} key={key} />
       ))}
-    </Router>
+    </>
   )
 }
 

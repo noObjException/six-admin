@@ -10,6 +10,11 @@
 @tailwind base;
 @tailwind components;
 
+img, svg {
+  display: inline;
+  vertical-align: baseline;
+}
+
 .fixed-screen {
   @apply fixed inset-0 w-screen h-screen;
 }
