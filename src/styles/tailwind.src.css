@@ -1,0 +1,60 @@
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+@tailwind base;
+@tailwind components;
+
+.fixed-screen {
+  @apply fixed inset-0 w-screen h-screen;
+}
+
+.fixed-bottom {
+  @apply fixed left-0 bottom-0 right-0;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.border-gray {
+  @apply border border-solid border-gray-100;
+}
+.border-b-gray {
+@apply border-b border-solid border-gray-100;
+}
+.absolute-bottom {
+@apply absolute left-0 bottom-0 right-0;
+}
+
+.border-1px {
+  position: relative;
+}
+
+.border-1px::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200%;
+  border: 1px solid red;
+  color: red;
+  height: 200%;
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-transform: scale(0.5);
+  transform: scale(0.5);
+  pointer-events: none; /* 防止点击触发 */
+  box-sizing: border-box;
+}
+
+@tailwind utilities;
