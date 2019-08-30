@@ -1,47 +1,64 @@
 import React, { FC } from "react";
 import ContentContainer from "components/ContentContainer";
 import { Table } from "antd";
+import { gql } from 'apollo-boost';
+import { useQuery } from "@apollo/react-hooks";
 
-const Products: FC = () => {
+const PRODUCT_QUERY = gql`
+  query Products($page: Int, $size: Int) {
+    products(page: $page, size: $size) {
+      total
+      items {
+        id
+        title
+        price
+      }
+    }
+  }
+`
+const Product: FC = () => {
 
-  const dataSource = [
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
+  const { loading, data: { products = [] }, fetchMore } = useQuery<any>(PRODUCT_QUERY, {
+    variables: {
+      page: 0,
+      size: 10
     },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    },
-  ];
-  
+    // fetchPolicy: "cache-and-network"
+  })
+
   const columns = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
-    },
+    { title: '产品名', dataIndex: 'title', key: 'title' },
+    { title: '价格', dataIndex: 'price', key: 'price' },
   ];
+
+  const handlePageChange = (page: number, pageSize: number | undefined) => {
+    fetchMore({
+      variables: {
+        page: page - 1,
+        size: pageSize,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        return fetchMoreResult
+      }
+    })
+  }
 
   return (
     <ContentContainer>
-      <Table dataSource={dataSource} columns={columns} />
+      <Table
+        rowKey='id'
+        dataSource={products.items || []}
+        columns={columns}
+        loading={loading}
+        pagination={{
+          total: products.total,
+          showQuickJumper: true,
+          onChange: handlePageChange,
+        }}
+      />
     </ContentContainer>
   )
 }
 
-export default Products
+export default Product
