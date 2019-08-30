@@ -6,6 +6,7 @@ const { Sider: AntdSider } = Layout;
 
 const menus = [
   { title: '产品列表', icon: 'video-camera', path: 'products' },
+  { title: '产品分类列表', icon: 'video-camera', path: 'product-categories' },
   { title: '用户列表', icon: 'user', path: 'users' },
 ]
 

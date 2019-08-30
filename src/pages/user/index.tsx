@@ -1,10 +1,10 @@
 import React, { FC } from "react";
 
-const Users: FC = () => {
+const User: FC = () => {
 
   return (
     <div>users</div>
   )
 }
 
-export default Users
+export default User
