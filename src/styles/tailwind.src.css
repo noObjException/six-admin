@@ -10,7 +10,8 @@
 @tailwind base;
 @tailwind components;
 
-img, svg {
+img,
+svg {
   display: inline;
   vertical-align: baseline;
 }
@@ -31,14 +32,16 @@ img, svg {
   @apply flex items-center justify-center;
 }
 
-.border-gray {
-  @apply border border-solid border-gray-100;
+.gray-border {
+  @apply border border-solid border-gray;
 }
+
 .border-b-gray {
-@apply border-b border-solid border-gray-100;
+  @apply border-b border-solid border-gray;
 }
+
 .absolute-bottom {
-@apply absolute left-0 bottom-0 right-0;
+  @apply absolute left-0 bottom-0 right-0;
 }
 
 .border-1px {
@@ -58,7 +61,8 @@ img, svg {
   transform-origin: left top;
   -webkit-transform: scale(0.5);
   transform: scale(0.5);
-  pointer-events: none; /* 防止点击触发 */
+  pointer-events: none;
+  /* 防止点击触发 */
   box-sizing: border-box;
 }
 

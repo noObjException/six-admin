@@ -1,8 +1,9 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import ContentContainer from "components/ContentContainer";
-import { Table } from "antd";
+import { Table, Modal } from "antd";
 import { gql } from 'apollo-boost';
 import { useQuery } from "@apollo/react-hooks";
+import SimpleForm from "components/SimpleForm";
 
 const PRODUCT_QUERY = gql`
   query Products($page: Int, $size: Int) {
@@ -44,6 +45,8 @@ const Product: FC = () => {
     })
   }
 
+  const [visible, setVisible] = useState(true)
+
   return (
     <ContentContainer>
       <Table
@@ -57,6 +60,9 @@ const Product: FC = () => {
           onChange: handlePageChange,
         }}
       />
+      <Modal visible={visible} onCancel={() => setVisible(false)}>
+        <SimpleForm schema={{}}/>
+      </Modal>
     </ContentContainer>
   )
 }

@@ -4,6 +4,7 @@ import { StaticContext } from "react-router";
 import Products from "pages/product";
 import Users from "pages/user";
 import ProductCategory from "pages/product-category";
+import FormTool from "pages/tools/form";
 
 const Index = () => <div>index</div>
 
@@ -11,7 +12,7 @@ interface IRoute {
   path: string,
   name?: string,
   exact?: boolean,
-  component: React.ComponentClass<any, any> | React.FunctionComponent<any> | React.ComponentClass<RouteComponentProps<any, StaticContext, any>, any> | React.FunctionComponent<RouteComponentProps<any, StaticContext, any>> | undefined,
+  component?: React.ComponentClass<any, any> | React.FunctionComponent<any> | React.ComponentClass<RouteComponentProps<any, StaticContext, any>, any> | React.FunctionComponent<RouteComponentProps<any, StaticContext, any>> | undefined,
 }
 
 const routes: IRoute[] = [
@@ -19,6 +20,7 @@ const routes: IRoute[] = [
   { path: '/products', component: Products },
   { path: '/product-categories', component: ProductCategory },
   { path: '/users', component: Users },
+  { path: '/tools/form', component: FormTool },
 ]
 
 const Routes: FC = () => {

@@ -8,6 +8,8 @@
     "@types/node": "12.7.2",
     "@types/react": "^16.9.2",
     "@types/react-dom": "16.9.0",
+    "@uform/antd": "^0.4.0-beta.0",
+    "@uform/printer": "^0.4.0-beta.0",
     "antd": "^3.22.2",
     "apollo-boost": "^0.4.4",
     "babel-plugin-import": "^1.12.1",
@@ -21,11 +23,12 @@
     "react": "^16.9.0",
     "react-app-rewired": "^2.1.3",
     "react-dom": "^16.9.0",
-    "react-hook-form": "^3.22.3",
+    "react-hook-form": "^3.23.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
     "react-transition-group": "^4.2.2",
     "typescript": "3.5.3",
+    "uform": "^0.1.2",
     "use-react-router": "^1.0.7"
   },
   "scripts": {

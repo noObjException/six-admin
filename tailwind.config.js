@@ -16,7 +16,7 @@ module.exports = {
       white: '#fff',
 
       gray: {
-        100: '#f7fafc',
+        default: 'rgb(235, 237, 240)',
       },
       red: {
         100: '#e53e3e',
@@ -198,6 +198,7 @@ module.exports = {
       ...theme('spacing'),
       full: '100%',
       screen: '100vh',
+      content: '90vh',
     }),
     inset: {
       '0': '0',
