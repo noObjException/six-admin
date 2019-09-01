@@ -3,6 +3,7 @@ import {
   SchemaForm, FormButtonGroup, Submit, Reset,
 } from '@uform/antd'
 
+
 interface ISimpleForm {
   columns?: Columns[]
   schema: any,
@@ -18,7 +19,6 @@ interface Columns {
 
 const SimpleForm: FC<ISimpleForm> = (props) => {
 
-
   return (
     <div className="overflow-scroll">
       <SchemaForm
@@ -27,7 +27,7 @@ const SimpleForm: FC<ISimpleForm> = (props) => {
       >
         {
           props.showActions !== false &&
-          <FormButtonGroup>
+          <FormButtonGroup sticky offset={8}>
             <Submit>提交</Submit>
             <Reset>重置</Reset>
           </FormButtonGroup>

@@ -1,8 +1,10 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 import ContentContainer from "components/ContentContainer";
 import SimpleForm from "components/SimpleForm";
 import { Button, Modal } from "antd";
 import ShowCode from "pages/tools/form/components/ShowCode";
+import { isEmpty } from "@uform/utils";
+
 
 const FormTool: FC = () => {
   const [formSchema, setFormSchema] = useState([])
@@ -21,9 +23,16 @@ const FormTool: FC = () => {
     properties: properties,
   }
 
+  const [formResult, setFormResult] = useState({})
+
+  const [options, setOptions] = useState<any[]>([])
+  useEffect(() => {
+    setTimeout(() => setOptions([{ label: 'string', value: 'string' }]), 1200)
+  }, [options])
+
   return (
     <div className="flex">
-      <ContentContainer className='w-full' title='添加字段' extra={<><Button type='primary'>保存</Button>&nbsp;<Button>重置</Button></>}>
+      <ContentContainer className='w-full' title='添加表单'>
         <div className="">
           <SimpleForm
             onSubmit={(val) => setFormSchema(val.fields)}
@@ -54,7 +63,7 @@ const FormTool: FC = () => {
                             "properties": {
                               "field_name": {
                                 "type": "string",
-                                "title": "字段名"
+                                "title": "字段名",
                               },
                               "field_key": {
                                 "type": "string",
@@ -63,10 +72,8 @@ const FormTool: FC = () => {
                               "field_type": {
                                 "type": "string",
                                 "title": "类型",
-                                "enum": [
-                                  { label: 'string', value: 'string' },
-                                  { label: 'number', value: 'number' },
-                                ]
+                                "enum": options,
+                                default: 'string'
                               },
                             }
                           }
@@ -83,12 +90,28 @@ const FormTool: FC = () => {
         <div className="">
           {
             formSchema &&
-            <SimpleForm schema={schema} showActions={false} />
+            <SimpleForm schema={schema} onSubmit={(val) => setFormResult(val)} showActions={!isEmpty(formSchema)} />
           }
         </div>
+        {!isEmpty(formResult) && <ShowResult data={formResult} onCancel={() => setFormResult({})} />}
       </ContentContainer>
     </div>
   )
 }
 
 export default FormTool
+
+const ShowResult = (props: any) => {
+
+  return (
+    <Modal
+      visible={!isEmpty(props.data)}
+      onCancel={() => props.onCancel && props.onCancel()}
+      onOk={() => props.onCancel && props.onCancel()}
+    >
+      <pre>
+        {JSON.stringify(props.data, null, 2)}
+      </pre>
+    </Modal>
+  )
+}
