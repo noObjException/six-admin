@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import {
   SchemaForm, FormButtonGroup, Submit, Reset,
 } from '@uform/antd'
+import { Observable } from "rxjs/internal/Observable";
 
 
 interface ISimpleForm {
@@ -9,6 +10,7 @@ interface ISimpleForm {
   schema: any,
   onSubmit?: (val: any) => void,
   showActions?: boolean,
+  value?: any,
 }
 
 interface Columns {
@@ -22,7 +24,13 @@ const SimpleForm: FC<ISimpleForm> = (props) => {
   return (
     <div className="overflow-scroll">
       <SchemaForm
+        effects={($: (event: string) => Observable<any>) => {
+          $('onFormInit').subscribe(() => {
+
+          })
+        }}
         schema={props.schema}
+        value={props.value}
         onSubmit={(val: any) => props.onSubmit && props.onSubmit(val)}
       >
         {

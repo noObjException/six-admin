@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Modal, Tabs } from 'antd';
+import { Modal, Tabs, message } from 'antd';
+import copy from 'copy-to-clipboard';
 
 const ShowCode = (props: any) => {
   const [visible, setVisible] = useState(false)
@@ -8,7 +9,15 @@ const ShowCode = (props: any) => {
     return (
       <>
         <span onClick={() => setVisible(!visible)}>{props.children}</span>
-        <Modal visible={visible} onCancel={() => setVisible(false)} okText='复制'>
+        <Modal
+          visible={visible}
+          onCancel={() => setVisible(false)}
+          okText='复制'
+          onOk={() => copy(JSON.stringify(props.data, null, 2), {
+            debug: true,
+            message: 'Press to copy',
+          }) && message.success('复制成功')}
+        >
           <Tabs type="card">
             <Tabs.TabPane tab='JSON' key='1'>
               <pre>
