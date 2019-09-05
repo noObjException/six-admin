@@ -5,6 +5,7 @@ import Products from "pages/product";
 import Users from "pages/user";
 import ProductCategory from "pages/product-category";
 import FormTool from "pages/tools/form";
+import TForm from "pages/test";
 
 const Index = () => <div>index</div>
 
@@ -21,6 +22,7 @@ const routes: IRoute[] = [
   { path: '/product-categories', component: ProductCategory },
   { path: '/users', component: Users },
   { path: '/tools/form', component: FormTool },
+  { path: '/test', component: TForm },
 ]
 
 const Routes: FC = () => {

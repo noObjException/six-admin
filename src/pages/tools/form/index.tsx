@@ -6,52 +6,60 @@ import ShowCode from "pages/tools/form/components/ShowCode";
 import { isEmpty } from "@uform/utils";
 
 const FormTool: FC = () => {
-  const [formSchema, setFormSchema] = useState([])
-  const properties: any = {}
+  const [schema, setSchema] = useState({})
 
-  formSchema && formSchema.forEach((field: any) => {
-    switch (field.field_type) {
-      case 'select':
-        properties[field.field_key] = {
-          title: field.field_name,
-          type: 'string',
-          enum: [
-            { label: 'l', value: 'v' }
-          ],
-          required: true,
-        }
-        break
-      case 'textarea':
-        properties[field.field_key] = {
-          title: field.field_name,
-          type: 'string',
-          'x-component': 'textarea',
-          required: true,
-        }
-        break
-      case 'upload':
-        properties[field.field_key] = {
-          title: field.field_name,
-          type: field.field_type,
-          'x-props': {
-            listType: 'card',
-          },
-          required: true,
-        }
-        break
-      default:
-        properties[field.field_key] = {
-          title: field.field_name,
-          type: field.field_type,
-          required: true,
-        }
+  const handleSubmit = (fields: any[]) => {
+    const properties: any = {}
+
+    fields && fields.forEach((field: any) => {
+      switch (field.field_type) {
+        case 'select':
+          properties[field.field_key] = {
+            title: field.field_name,
+            type: 'string',
+            enum: [
+              { label: 'l', value: 'v' }
+            ],
+            required: true,
+          }
+          break
+        case 'textarea':
+          properties[field.field_key] = {
+            title: field.field_name,
+            type: 'string',
+            'x-component': 'textarea',
+            required: true,
+          }
+          break
+        case 'upload':
+          properties[field.field_key] = {
+            title: field.field_name,
+            type: field.field_type,
+            'x-props': {
+              listType: 'card',
+            },
+            required: true,
+          }
+          break
+        default:
+          properties[field.field_key] = {
+            title: field.field_name,
+            type: field.field_type,
+            required: true,
+          }
+      }
+    })
+
+    const schema = {
+      type: 'object',
+      properties,
     }
-  })
 
-  const schema = {
-    type: "object",
-    properties: properties,
+    console.log(schema)
+
+    setSchema(schema)
   }
+
 
   const [formResult, setFormResult] = useState({})
 
@@ -75,7 +83,7 @@ const FormTool: FC = () => {
       { label: '等级', value: 'rating' },
       { label: '时间', value: 'time' },
     ]), 1200)
-  }, [options])
+  }, [])
 
   const value = {
     fields: [
@@ -87,67 +95,65 @@ const FormTool: FC = () => {
   return (
     <div className="flex">
       <ContentContainer className='w-full' title='添加表单'>
-        <div className="">
-          <SimpleForm
-            onSubmit={(val) => setFormSchema(val.fields)}
-            value={value}
-            schema={{
-              "type": "object",
-              "properties": {
-                "fields": {
-                  "type": "array",
-                  "x-props": {
-                    "renderAddition": "添加",
-                    "renderRemove": "删除"
-                  },
-                  "maxItems": 100,
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "UFORM_NO_NAME_FIELD_$0": {
-                        "type": "object",
-                        "x-component": "block",
-                        "properties": {
-                          "UFORM_NO_NAME_FIELD_$1": {
-                            "type": "object",
-                            "x-props": {
-                              "labelCol": 4,
-                              "wrapperCol": 20
+
+        <SimpleForm
+          onSubmit={(val) => handleSubmit(val.fields)}
+          value={value}
+          schema={{
+            "type": "object",
+            "properties": {
+              "fields": {
+                "type": "array",
+                "x-props": {
+                  "renderAddition": "添加",
+                  "renderRemove": "删除"
+                },
+                "maxItems": 100,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "UFORM_NO_NAME_FIELD_$0": {
+                      "type": "object",
+                      "x-component": "block",
+                      "properties": {
+                        "UFORM_NO_NAME_FIELD_$1": {
+                          "type": "object",
+                          "x-props": {
+                            "labelCol": 4,
+                            "wrapperCol": 20
+                          },
+                          "x-component": "layout",
+                          "properties": {
+                            "field_name": {
+                              "type": "string",
+                              "title": "字段名",
                             },
-                            "x-component": "layout",
-                            "properties": {
-                              "field_name": {
-                                "type": "string",
-                                "title": "字段名",
-                              },
-                              "field_key": {
-                                "type": "string",
-                                "title": "字段key"
-                              },
-                              "field_type": {
-                                "type": "string",
-                                "title": "类型",
-                                "enum": options,
-                                default: 'string'
-                              },
-                            }
+                            "field_key": {
+                              "type": "string",
+                              "title": "字段key"
+                            },
+                            "field_type": {
+                              "type": "string",
+                              "title": "类型",
+                              "enum": options,
+                              default: 'string'
+                            },
                           }
                         }
-                      },
-                    }
+                      }
+                    },
                   }
                 }
               }
-            }} />
-        </div>
+            }
+          }} />
+
       </ContentContainer>
-      <ContentContainer className='w-full' title='效果' extra={<ShowCode data={schema}><Button type='primary' disabled={formSchema.length === 0}>打印JSON</Button></ShowCode>}>
-        <div className="">
-          {
-            formSchema &&
-            <SimpleForm schema={schema} onSubmit={(val) => setFormResult(val)} showActions={!isEmpty(formSchema)} />
-          }
-        </div>
+      <ContentContainer className='w-full' title='效果' extra={<ShowCode data={schema}><Button type='primary' disabled={isEmpty(schema)}>打印JSON</Button></ShowCode>}>
+        {
+          !isEmpty(schema) &&
+          <SimpleForm schema={schema} onSubmit={(val) => setFormResult(val)} showActions={!isEmpty(schema)} />
+        }
         {!isEmpty(formResult) && <ShowResult data={formResult} onCancel={() => setFormResult({})} />}
       </ContentContainer>
     </div>

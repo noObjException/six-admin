@@ -20,9 +20,10 @@ interface Columns {
 }
 
 const SimpleForm: FC<ISimpleForm> = (props) => {
+  console.log(props.schema)
 
   return (
-    <div className="overflow-scroll">
+    <div className="overflow-scroll bg-white p-2">
       <SchemaForm
         effects={($: (event: string) => Observable<any>) => {
           $('onFormInit').subscribe(() => {
