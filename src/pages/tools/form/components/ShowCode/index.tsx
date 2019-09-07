@@ -46,12 +46,12 @@ const ShowCode: FC<IProps> = (props) => {
   const [visible, setVisible] = useState(false)
   const [copyText, setCopyText] = useState('')
 
-  // hava to set it
+  // have to set it
   useEffect(() => {
     const code = JSON.stringify(props.data, null, 2)
     setCopyText(code)
   }, [props.data])
-  
+
   const handleChange = (key: 'json' | 'tsx' | 'jsx') => {
     const json = JSON.stringify(props.data, null, 2)
     switch (key) {

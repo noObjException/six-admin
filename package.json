@@ -30,6 +30,7 @@
     "react-scripts": "3.1.1",
     "react-syntax-highlighter": "^11.0.2",
     "react-transition-group": "^4.2.2",
+    "rxjs": "^6.5.3",
     "typescript": "3.5.3",
     "uform": "^0.1.2",
     "use-react-router": "^1.0.7"
@@ -57,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.138",
     "@types/react-router-dom": "^4.3.5",
     "@types/react-syntax-highlighter": "^10.2.1",
     "@types/react-transition-group": "^4.2.2",

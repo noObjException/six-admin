@@ -3,14 +3,16 @@ import {
   SchemaForm, FormButtonGroup, Submit, Reset,
 } from '@uform/antd'
 import { Observable } from "rxjs/internal/Observable";
+import BaseProps from "types/base-props";
 
-
-interface ISimpleForm {
+interface ISimpleForm extends BaseProps {
   columns?: Columns[]
   schema: any,
   onSubmit?: (val: any) => void,
   showActions?: boolean,
+  initialValues?: any,
   value?: any,
+  editable?: boolean
 }
 
 interface Columns {
@@ -20,7 +22,6 @@ interface Columns {
 }
 
 const SimpleForm: FC<ISimpleForm> = (props) => {
-  console.log(props.schema)
 
   return (
     <div className="overflow-scroll bg-white p-2">
@@ -30,8 +31,9 @@ const SimpleForm: FC<ISimpleForm> = (props) => {
 
           })
         }}
+        editable={props.editable}
         schema={props.schema}
-        value={props.value}
+        initialValues={props.initialValues}
         onSubmit={(val: any) => props.onSubmit && props.onSubmit(val)}
       >
         {
