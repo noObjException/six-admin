@@ -7,7 +7,7 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { FormToolContext, } from '../../index'
+import { FormToolContext } from '../../index'
 
 
 const actions = createFormActions()
@@ -19,61 +19,14 @@ const FormOption: FC = (props) => {
 	const [ optionType, setOptionType ] = useState('url')
 
   const handleSubmit = (field: any) => {
-    // const properties: any = {}
-		// console.log(fields)
-    // fields && fields.forEach((field: any) => {
-    //   switch (field.field_type) {
-    //     case 'select':
-    //       properties[field.field_key] = {
-    //         title: field.field_name,
-    //         type: 'string',
-    //         enum: [
-    //           { label: 'l', value: 'v' },
-    //         ],
-    //         required: true,
-    //       }
-    //       break
-    //     case 'textarea':
-    //       properties[field.field_key] = {
-    //         title: field.field_name,
-    //         type: 'string',
-    //         'x-component': 'textarea',
-    //         required: true,
-    //       }
-    //       break
-    //     case 'upload':
-    //       properties[field.field_key] = {
-    //         title: field.field_name,
-    //         type: field.field_type,
-    //         'x-props': {
-    //           listType: 'card',
-    //         },
-    //         required: true,
-    //       }
-    //       break
-    //     default:
-    //       properties[field.field_key] = {
-    //         title: field.field_name,
-    //         type: field.field_type,
-    //         required: true,
-    //       }
-    //   }
-    // })
-		//
-    // const schema = {
-    //   type: 'object',
-    //   properties: {
-    //     layout: {
-    //       type: 'object',
-    //       'x-props': {
-    //         labelCol: 4,
-    //         wrapperCol: 20,
-    //       },
-    //       'x-component': 'layout',
-    //       properties,
-    //     },
-    //   },
-    // }
+	  switch (field.type) {
+		  case 'select':
+
+		  	break
+		  case 'radio':
+		  default:
+		  	console.log('default', field)
+	  }
 
     addField(field)
 	  setVisible(false)
@@ -176,7 +129,7 @@ const FormOption: FC = (props) => {
 										optionType === 'enum' && (
 											<Field
 												title='&nbsp;'
-												name='array'
+												name='enum'
 												type='array'
 												x-component='table'
 												x-props={{

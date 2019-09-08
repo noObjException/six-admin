@@ -3,9 +3,9 @@ describe('tt', () => {
 		cy.visit('tools/form')
 
 		const inputs = [
-            {name: 'name', key: 'key', type: '输入框'},
-            {name: 'name', key: 'key', type: '密码框'},
-            {name: 'name', key: 'key', type: '数字输入框'},
+            {name: 'name1', key: 'key1', type: '输入框'},
+            {name: 'name2', key: 'key2', type: '密码框'},
+            {name: 'name3', key: 'key3', type: '数字输入框'},
         ]
 
         inputs.forEach(input => {
@@ -21,5 +21,11 @@ describe('tt', () => {
             cy.contains(input.key)
             cy.contains(input.type)
         })
+
+        // test deleteItem
+        const deleteIndex = 0
+        cy.get('button i.anticon-delete').eq(deleteIndex).parent().click()
+        cy.get('table td').should('length', (inputs.length - 1) * 5)
+        cy.get('table td').eq(deleteIndex).should('not.text', inputs[deleteIndex].name)
     })
 })
