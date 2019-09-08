@@ -12,37 +12,49 @@ import { FormToolContext } from '../../index'
 
 const actions = createFormActions()
 
-const FormOption: FC = (props) => {
-  const { addField } = useContext(FormToolContext)
-	const [ visible, setVisible ] = useState(false)
+
+interface IProps {
+	initialValues?: any,
+	editIndex?: number | undefined,
+	visible: boolean,
+	onCancel?: () => void
+}
+
+
+const FormOption: FC<IProps> = (props) => {
+	const { addField, updateField } = useContext(FormToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 	const [ optionType, setOptionType ] = useState('url')
 
-  const handleSubmit = (field: any) => {
-	  switch (field.type) {
-		  case 'select':
+	const handleSubmit = (field: any) => {
+		switch (field.type) {
+			case 'select':
 
-		  	break
-		  case 'radio':
-		  default:
-		  	console.log('default', field)
-	  }
+				break
+			case 'radio':
+			default:
+				console.log('default', field)
+		}
 
-    addField(field)
-	  setVisible(false)
-	  actions.reset()
-  }
+		if (props.editIndex !== undefined) {
+			updateField(props.editIndex, field)
+		}else {
+			addField(field)
+		}
 
-  return (
+		props.onCancel && props.onCancel()
+		actions.reset()
+	}
+
+	return (
 		<>
-			<span onClick={() => setVisible(!visible)}>{props.children}</span>
 			<FormProvider>
 				<Modal
 					title='添加字段'
-					visible={visible}
+					visible={props.visible}
 					width={'60vw'}
-					onCancel={() => setVisible(false)}
-          footer={<FormConsumer>{({submit})=>(<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer>}
+					onCancel={() => props.onCancel && props.onCancel()}
+					footer={<FormConsumer>{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer>}
 				>
 					<SchemaForm
 						className='overflow-scroll'
@@ -51,6 +63,7 @@ const FormOption: FC = (props) => {
 						actions={actions}
 						labelCol={4}
 						wrapperCol={20}
+						initialValues={props.initialValues}
 						effects={($) => {
 							$('selectType', 'type')
 								.subscribe(({ payload }) => {
