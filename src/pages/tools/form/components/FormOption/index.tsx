@@ -77,6 +77,7 @@ const FormOption: FC = (props) => {
 
     addField(field)
 	  setVisible(false)
+	  actions.reset()
   }
 
   return (
