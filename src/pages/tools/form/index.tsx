@@ -1,9 +1,15 @@
 import React, { createContext, FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import FormOption from './components/FormOption'
-import { Button, Empty, Table } from 'antd'
+import { Button, Empty, Table, Dropdown, Menu, message } from 'antd'
 import { isEmpty } from 'lodash'
 import SimpleForm from 'components/SimpleForm'
+import ShowCode from './components/ShowCode'
+import ShowSubmitResult from './components/ShowSubmitResult'
+import { now } from 'utils/time'
+
+
+const HISTORY_KEY = 'schema_history'
 
 
 export interface IFormToolState {
@@ -13,6 +19,7 @@ export interface IFormToolState {
 
 export interface IFormToolReducer {
 	addField(field: any): void,
+	setField(field: any): void,
 
 	updateField(index: number, field: any): void,
 
@@ -25,6 +32,7 @@ const initState: IFormToolState & IFormToolReducer = {
 	fields: [],
 
 	addField: defaultFunc,
+	setField: defaultFunc,
 	updateField: defaultFunc,
 	delField: defaultFunc,
 }
@@ -36,18 +44,20 @@ export const reducers = (state: IFormToolState, action: { type: string, payload:
 	switch (action.type) {
 		case 'ADD_FIELD':
 			return { ...state, fields: [ ...state.fields, action.payload ] }
+		case 'SET_FIELD':
+			return { ...state, fields: action.payload }
 		case 'UPDATE_FIELD':
 			state.fields.splice(action.payload.index, 1, action.payload.payload)
-			return { ...state, fields: [...state.fields] }
+			return { ...state, fields: [ ...state.fields ] }
 		case 'DEL_FIELD':
 			state.fields.splice(action.payload, 1)
-			return { ...state, fields: [...state.fields] }
+			return { ...state, fields: [ ...state.fields ] }
 		default:
 			return state
 	}
 }
 
-const types: {[key: string]: string} = {
+const types: { [key: string]: string } = {
 	string: '输入框',
 	password: '密码框',
 	number: '数字输入框',
@@ -70,12 +80,13 @@ const FormTool: FC = () => {
 	const contextValue: IFormToolState & IFormToolReducer = {
 		fields: state.fields,
 		addField: (payload: any) => dispatch({ type: 'ADD_FIELD', payload }),
+		setField: (payload: any) => dispatch({ type: 'SET_FIELD', payload }),
 		updateField: (index: number, payload: any) => dispatch({ type: 'UPDATE_FIELD', payload: { index, payload } }),
 		delField: (payload: number) => dispatch({ type: 'DEL_FIELD', payload }),
 	}
-	const { fields, delField } = contextValue
+	const { fields, setField, delField } = contextValue
 
-	// const [ formResult, setFormResult ] = useState({})
+	const [ formResult, setFormResult ] = useState({})
 
 	// 预览效果
 	const [ schema, setSchema ] = useState({})
@@ -88,7 +99,7 @@ const FormTool: FC = () => {
 						title: field.name,
 						type: 'string',
 						enum: field.enum,
-						required: true,
+						required: field.required,
 					}
 					break
 				case 'textarea':
@@ -96,7 +107,7 @@ const FormTool: FC = () => {
 						title: field.name,
 						type: 'string',
 						'x-component': 'textarea',
-						required: true,
+						required: field.required,
 					}
 					break
 				case 'upload':
@@ -106,14 +117,15 @@ const FormTool: FC = () => {
 						'x-props': {
 							listType: 'card',
 						},
-						required: true,
+						required: field.required,
 					}
 					break
 				default:
 					properties[field.key] = {
 						title: field.name,
 						type: field.type,
-						required: true,
+						required: field.required,
+						'x-rules': field['x-rules'],
 					}
 			}
 		})
@@ -134,6 +146,8 @@ const FormTool: FC = () => {
 		}
 		console.log('schema', schema)
 		setSchema(schema)
+
+		addHistory(fields)
 	}
 
 
@@ -147,12 +161,38 @@ const FormTool: FC = () => {
 		setEditIndex(index)
 	}
 
+	const [ histories, setHistories ] = useState<any[]>(JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'))
+	// history
+	const addHistory = (val: any) => {
+		const histories: any[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+		if (histories.length >= 20) {
+			histories.shift()
+		}
+		console.log(val)
+		histories.unshift({ createdAt: now('YYYY-MM-DD HH:mm'), data: val })
+		if (val) {
+			setHistories(histories)
+			localStorage.setItem(HISTORY_KEY, JSON.stringify(histories))
+		}
+	}
+
+	const historyList = (<Menu onClick={({ key }: { key: any }) => backToHistory(histories[key].data)}>{histories.map((history, index) => (<Menu.Item key={index}>{history.createdAt}</Menu.Item>))}</Menu>)
+	const backToHistory = (fields: any) => {
+		setField(fields)
+		message.success('加载成功')
+	}
+
 	return (
 		<FormToolContext.Provider value={contextValue}>
 			<div className='flex'>
 				<ContentContainer
 					className='w-full' title='添加表单'
-					extra={<><Button type='primary' onClick={preview} disabled={isEmpty(fields)}>查看效果</Button></>}
+					extra={<>
+						<Button type='primary' onClick={preview} disabled={isEmpty(fields)}>查看效果</Button>&nbsp;
+						<Dropdown overlay={historyList} placement='bottomLeft' disabled={histories.length === 0}>
+							<Button onClick={() => console.log('show history')}>历史纪录</Button>
+						</Dropdown>
+					</>}
 				>
 					{
 						!fields.length ?
@@ -184,11 +224,18 @@ const FormTool: FC = () => {
 										render: (_, record, index) => (
 											<>
 												<Button
-													type='default' size='small' icon='edit' shape='circle'
+													type='default'
+													size='small'
+													icon='edit'
+													shape='circle'
 													onClick={() => handleEdit(index, record)}
 												/>&nbsp;
 												<Button
-													type='default' size='small' icon='delete' shape='circle' onClick={() => delField(index)}
+													type='default'
+													size='small'
+													icon='delete'
+													shape='circle'
+													onClick={() => delField(index)}
 												/>
 											</>
 										),
@@ -202,13 +249,13 @@ const FormTool: FC = () => {
 				</ContentContainer>
 				<ContentContainer
 					className='w-full' title='效果'
-					// extra={<ShowCode data={schema}><Button type='primary' disabled={isEmpty(schema)}>打印JSON</Button></ShowCode>}
+					extra={<ShowCode data={schema}><Button type='primary' disabled={isEmpty(schema)}>查看代码</Button></ShowCode>}
 				>
 					{
 						!isEmpty(schema) &&
-            <SimpleForm schema={schema} showActions={!isEmpty(schema)} />
+						<SimpleForm schema={schema} showActions={!isEmpty(schema)} onSubmit={val => setFormResult(val)} />
 					}
-					{/*{!isEmpty(formResult) && <ShowSubmitResult data={formResult} onCancel={() => setFormResult({})} />}*/}
+					{!isEmpty(formResult) && <ShowSubmitResult data={formResult} onCancel={() => setFormResult({})} />}
 				</ContentContainer>
 			</div>
 
@@ -223,5 +270,3 @@ const FormTool: FC = () => {
 }
 
 export default FormTool
-
-

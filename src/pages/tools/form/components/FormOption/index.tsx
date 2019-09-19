@@ -6,8 +6,10 @@ import SchemaForm, {
 	FormSlot,
 	FormProvider,
 	FormConsumer,
+	FormBlock,
 } from '@uform/antd'
 import { FormToolContext } from '../../index'
+import ValidatorOption from './ValidatorOption'
 
 
 const actions = createFormActions()
@@ -25,6 +27,7 @@ const FormOption: FC<IProps> = (props) => {
 	const { addField, updateField } = useContext(FormToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 	const [ optionType, setOptionType ] = useState('url')
+	const [ rules, setRules ] = useState([])
 
 	const handleSubmit = (field: any) => {
 		switch (field.type) {
@@ -36,9 +39,13 @@ const FormOption: FC<IProps> = (props) => {
 				console.log('default', field)
 		}
 
+		field['x-rules'] = rules
+
+		console.log(field)
+
 		if (props.editIndex !== undefined) {
 			updateField(props.editIndex, field)
-		}else {
+		} else {
 			addField(field)
 		}
 
@@ -52,7 +59,7 @@ const FormOption: FC<IProps> = (props) => {
 				<Modal
 					title='添加字段'
 					visible={props.visible}
-					width={'60vw'}
+					width={'48vw'}
 					onCancel={() => props.onCancel && props.onCancel()}
 					footer={<FormConsumer>{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer>}
 				>
@@ -67,7 +74,7 @@ const FormOption: FC<IProps> = (props) => {
 						effects={($) => {
 							$('selectType', 'type')
 								.subscribe(({ payload }) => {
-									setVisibleOptions(payload === 'select')
+									setVisibleOptions(['select', 'radio', 'checkbox'].includes(payload))
 								})
 						}}
 						onSubmit={handleSubmit}
@@ -85,10 +92,18 @@ const FormOption: FC<IProps> = (props) => {
 							name='key'
 						/>
 						<Field
+							type='boolean'
+							required
+							title='是否必填'
+							name='required'
+							default={true}
+						/>
+						<Field
 							type='string'
 							required
 							title='类型'
 							name='type'
+							default='string'
 							enum={[
 								{ label: '输入框', value: 'string' },
 								{ label: '密码框', value: 'password' },
@@ -108,7 +123,7 @@ const FormOption: FC<IProps> = (props) => {
 							]}
 							x-effect={dispatch => {
 								return {
-									onChange(val: any, options: any) {
+									onChange(val: any) {
 										dispatch('selectType', val)
 									},
 								}
@@ -135,6 +150,7 @@ const FormOption: FC<IProps> = (props) => {
 												type='string'
 												title='&nbsp;'
 												name='url'
+												description='请输入获取options的url'
 											/>
 										)
 									}
@@ -160,6 +176,21 @@ const FormOption: FC<IProps> = (props) => {
 								</>
 							)
 						}
+
+						<FormBlock title='验证规则'>
+							<ValidatorOption onChange={val => {
+								setRules(val)
+							}} />
+							{/*<Field*/}
+							{/*	name='validations'*/}
+							{/*	type='checkbox'*/}
+							{/*	enum={[*/}
+							{/*		{ label: '必填', value: 'required' },*/}
+							{/*		{ label: '最大值', value: 'max' },*/}
+							{/*		{ label: '最小值', value: 'min' },*/}
+							{/*	]}*/}
+							{/*/>*/}
+						</FormBlock>
 					</SchemaForm>
 				</Modal>
 			</FormProvider>
