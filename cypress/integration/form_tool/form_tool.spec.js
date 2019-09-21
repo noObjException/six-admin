@@ -11,7 +11,7 @@ describe('tt', () => {
 
     it('should add items', function () {
         inputs.forEach(input => {
-            cy.contains('Create Now').click()
+            cy.contains('字段').click()
             cy.get('#name input').type(input.name).should('have.value', input.name)
             cy.get('#key input').type(input.key).should('have.value', input.key)
             cy.get('#type').click()

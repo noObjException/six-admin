@@ -1,7 +1,7 @@
 import React, { createContext, FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import FormOption from './components/FormOption'
-import { Button, Empty, Table, Dropdown, Menu, message } from 'antd'
+import { Button, Empty, Table, Dropdown, Menu, message, Switch } from 'antd'
 import { isEmpty } from 'lodash'
 import SimpleForm from 'components/SimpleForm'
 import ShowCode from './components/ShowCode'
@@ -19,6 +19,7 @@ export interface IFormToolState {
 
 export interface IFormToolReducer {
 	addField(field: any): void,
+
 	setField(field: any): void,
 
 	updateField(index: number, field: any): void,
@@ -164,11 +165,10 @@ const FormTool: FC = () => {
 	const [ histories, setHistories ] = useState<any[]>(JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'))
 	// history
 	const addHistory = (val: any) => {
-		const histories: any[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+		const histories: any[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]').filter((i: { data: any[] }) => i.data.length > 0)
 		if (histories.length >= 20) {
 			histories.shift()
 		}
-		console.log(val)
 		histories.unshift({ createdAt: now('YYYY-MM-DD HH:mm'), data: val })
 		if (val) {
 			setHistories(histories)
@@ -176,7 +176,10 @@ const FormTool: FC = () => {
 		}
 	}
 
-	const historyList = (<Menu onClick={({ key }: { key: any }) => backToHistory(histories[key].data)}>{histories.map((history, index) => (<Menu.Item key={index}>{history.createdAt}</Menu.Item>))}</Menu>)
+	const historyList = (
+		<Menu onClick={({ key }: { key: any }) => backToHistory(histories[key].data)}>
+			{histories.map((history, index) => (<Menu.Item key={index}>{history.createdAt}</Menu.Item>))}
+		</Menu>)
 	const backToHistory = (fields: any) => {
 		setField(fields)
 		message.success('加载成功')
@@ -190,7 +193,7 @@ const FormTool: FC = () => {
 					extra={<>
 						<Button type='primary' onClick={preview} disabled={isEmpty(fields)}>查看效果</Button>&nbsp;
 						<Dropdown overlay={historyList} placement='bottomLeft' disabled={histories.length === 0}>
-							<Button onClick={() => console.log('show history')}>历史纪录</Button>
+							<Button>历史纪录</Button>
 						</Dropdown>
 					</>}
 				>
@@ -203,10 +206,10 @@ const FormTool: FC = () => {
 								}}
 								description={false}
 							>
-								<Button type='primary' onClick={() => setVisible(true)}>Create Now</Button>
+								<Button type='primary' onClick={() => setVisible(true)} icon='plus'>字段</Button>
 							</Empty>
 							:
-							<Button type='primary' className='mb-2' onClick={() => setVisible(true)}>Create Now</Button>
+							<Button type='primary' className='mb-2' onClick={() => setVisible(true)} icon='plus'>字段</Button>
 					}
 					{
 						fields.length > 0 && (
@@ -217,7 +220,12 @@ const FormTool: FC = () => {
 									{ title: 'name', key: 'name', dataIndex: 'name' },
 									{ title: 'key', key: 'key', dataIndex: 'key' },
 									{ title: 'type', key: 'type', dataIndex: 'type', render: (text) => types[text] || '未知' },
-									{ title: '必填', key: 'required', dataIndex: 'required' },
+									{
+										title: '必填',
+										key: 'required',
+										dataIndex: 'required',
+										render: (checked) => <Switch checked={checked} checkedChildren="是" unCheckedChildren="否" />,
+									},
 									{
 										title: 'actions',
 										key: 'actions',

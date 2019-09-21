@@ -19,7 +19,7 @@ interface IProps {
 	initialValues?: any,
 	editIndex?: number | undefined,
 	visible: boolean,
-	onCancel?: () => void
+	onCancel?: () => void,
 }
 
 
@@ -74,7 +74,7 @@ const FormOption: FC<IProps> = (props) => {
 						effects={($) => {
 							$('selectType', 'type')
 								.subscribe(({ payload }) => {
-									setVisibleOptions(['select', 'radio', 'checkbox'].includes(payload))
+									setVisibleOptions([ 'select', 'radio', 'checkbox' ].includes(payload))
 								})
 						}}
 						onSubmit={handleSubmit}
@@ -177,19 +177,14 @@ const FormOption: FC<IProps> = (props) => {
 							)
 						}
 
-						<FormBlock title='验证规则'>
-							<ValidatorOption onChange={val => {
-								setRules(val)
-							}} />
-							{/*<Field*/}
-							{/*	name='validations'*/}
-							{/*	type='checkbox'*/}
-							{/*	enum={[*/}
-							{/*		{ label: '必填', value: 'required' },*/}
-							{/*		{ label: '最大值', value: 'max' },*/}
-							{/*		{ label: '最小值', value: 'min' },*/}
-							{/*	]}*/}
-							{/*/>*/}
+						<FormBlock title={<div>验证规则&nbsp; <Button type='primary' icon='plus' size='small'>规则</Button></div>}>
+							<FormSlot name='nam'>
+								<ValidatorOption
+									onChange={val => {
+										setRules(val)
+									}}
+								/>
+							</FormSlot>
 						</FormBlock>
 					</SchemaForm>
 				</Modal>
