@@ -93,7 +93,6 @@ const ValidatorOption: FC<IProps> = (props) => {
 				)
 			}
 
-			<br />
 			{
 				visible && (
 					<div>
@@ -114,7 +113,7 @@ const ValidatorOption: FC<IProps> = (props) => {
 							))}
 						</Select>
 						&nbsp;
-						<Button ghost type='primary'>取消</Button>
+						<Button ghost type='primary' onClick={() => setVisible(false)}>取消</Button>
 					</div>
 				)
 			}

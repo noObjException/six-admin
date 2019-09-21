@@ -61,7 +61,7 @@ const FormOption: FC<IProps> = (props) => {
 					visible={props.visible}
 					width={'48vw'}
 					onCancel={() => props.onCancel && props.onCancel()}
-					footer={<FormConsumer>{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer>}
+					footer={<><Button onClick={props.onCancel}>取消</Button><FormConsumer>{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer></>}
 				>
 					<SchemaForm
 						className='overflow-scroll'
