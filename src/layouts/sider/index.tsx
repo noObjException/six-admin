@@ -8,18 +8,20 @@ interface IMenu {
   title: string,
   icon: string,
   path?: string,
-  childrens?: IMenu[]
+  children?: IMenu[]
 }
 const menus: IMenu[] = [
-  { title: '产品列表', icon: 'video-camera', path: 'products' },
-  { title: '产品分类列表', icon: 'video-camera', path: 'product-categories' },
-  { title: '用户列表', icon: 'user', path: 'users' },
-  {
-    title: '工具', icon: 'user',
-    childrens: [
-      { title: '表单生成', icon: 'form', path: 'tools/form' },
-    ]
-  },
+  // { title: '产品列表', icon: 'video-camera', path: 'products' },
+  // { title: '产品分类列表', icon: 'video-camera', path: 'product-categories' },
+  // { title: '用户列表', icon: 'user', path: 'users' },
+  // {
+  //   title: '工具', icon: 'user',
+  //   children: [
+  //     { title: '表单生成', icon: 'form', path: 'tools/form' },
+  //   ]
+  // },
+  { title: '表单生成', icon: 'form', path: 'tools/form' },
+  { title: '表格生成', icon: 'table', path: 'tools/table' },
 ]
 
 const Sider: FC = () => {
@@ -31,7 +33,7 @@ const Sider: FC = () => {
       <Menu theme='dark' mode='inline' onClick={({ key }) => isNaN(Number(key)) && history.push(`/${key}`)}>
         {menus.map((menu: IMenu, key) => (
 
-          menu.childrens ?
+          menu.children ?
             <Menu.SubMenu
               key={key + '1'}
               title={(
@@ -42,7 +44,7 @@ const Sider: FC = () => {
               )}
             >
               {
-                menu.childrens.map((child) => (
+                menu.children.map((child) => (
                   <Menu.Item key={child.path}>
                     <Icon type={child.icon} />
                     <span>{child.title}</span>

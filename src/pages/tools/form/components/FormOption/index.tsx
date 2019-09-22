@@ -24,12 +24,14 @@ interface IProps {
 
 
 const FormOption: FC<IProps> = (props) => {
-	const { addField, updateField } = useContext(FormToolContext)
+	const { addField, updateField, fields } = useContext(FormToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 	const [ optionType, setOptionType ] = useState('url')
 	const [ rules, setRules ] = useState([])
 
 	const handleSubmit = (field: any) => {
+		console.log('o', field)
+
 		switch (field.type) {
 			case 'select':
 
@@ -53,6 +55,18 @@ const FormOption: FC<IProps> = (props) => {
 		actions.reset()
 	}
 
+	console.log(fields)
+
+	const getValue = () => fields
+
+	const checkReplace = (val: string) => {
+		console.log(val)
+		console.log(fields)
+		console.log(fields.map(i => i.key))
+		console.log(getValue())
+		return fields.map(i => i.key).includes(val) ? '该 key 已被使用' : ''
+	}
+
 	return (
 		<>
 			<FormProvider>
@@ -61,7 +75,8 @@ const FormOption: FC<IProps> = (props) => {
 					visible={props.visible}
 					width={'48vw'}
 					onCancel={() => props.onCancel && props.onCancel()}
-					footer={<><Button onClick={props.onCancel}>取消</Button><FormConsumer>{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer></>}
+					footer={<><Button onClick={props.onCancel}>取消</Button><FormConsumer>{({ submit }) => (
+						<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer></>}
 				>
 					<SchemaForm
 						className='overflow-scroll'
@@ -90,6 +105,12 @@ const FormOption: FC<IProps> = (props) => {
 							required
 							title='字段key'
 							name='key'
+							x-rules={checkReplace}
+						/>
+						<Field
+							type='string'
+							title='字段描述'
+							name='description'
 						/>
 						<Field
 							type='boolean'
@@ -134,7 +155,7 @@ const FormOption: FC<IProps> = (props) => {
 							visibleOptions && (
 								<>
 									<Field type='object' title='options'>
-										<FormSlot name='name'>
+										<FormSlot name='options'>
 											<Radio.Group
 												defaultValue='url' buttonStyle='solid'
 												onChange={({ target: { value } }) => setOptionType(value)}
@@ -177,14 +198,14 @@ const FormOption: FC<IProps> = (props) => {
 							)
 						}
 
-						<FormBlock title={<div>验证规则&nbsp; <Button type='primary' icon='plus' size='small'>规则</Button></div>}>
-							<FormSlot name='nam'>
-								<ValidatorOption
-									onChange={val => {
-										setRules(val)
-									}}
-								/>
-							</FormSlot>
+						<FormBlock title={<div>验证规则{/*&nbsp; <Button type='primary' icon='plus' size='small'>规则</Button>*/}</div>}>
+							{/*<FormSlot name='valid'>*/}
+							<ValidatorOption
+								onChange={val => {
+									setRules(val)
+								}}
+							/>
+							{/*</FormSlot>*/}
 						</FormBlock>
 					</SchemaForm>
 				</Modal>

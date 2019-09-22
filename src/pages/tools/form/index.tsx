@@ -7,13 +7,24 @@ import SimpleForm from 'components/SimpleForm'
 import ShowCode from './components/ShowCode'
 import ShowSubmitResult from './components/ShowSubmitResult'
 import { now } from 'utils/time'
+import SchemaForm, { Field } from '@uform/antd'
 
 
 const HISTORY_KEY = 'schema_history'
 
-
+interface IFormField {
+	name: string,
+	key: string,
+	type: string,
+	description?: string,
+	required?: boolean,
+	enum?: {
+		label: string,
+		value: string,
+	}[]
+}
 export interface IFormToolState {
-	fields: any[]
+	fields: IFormField[]
 }
 
 
@@ -99,6 +110,30 @@ const FormTool: FC = () => {
 					properties[field.key] = {
 						title: field.name,
 						type: 'string',
+						enum: field.enum,
+						required: field.required,
+					}
+					break
+				case 'radio':
+					properties[field.key] = {
+						title: field.name,
+						type: 'radio',
+						enum: field.enum,
+						required: field.required,
+					}
+					break
+				case 'checkbox':
+					properties[field.key] = {
+						title: field.name,
+						type: 'checkbox',
+						enum: field.enum,
+						required: field.required,
+					}
+					break
+				case 'transfer':
+					properties[field.key] = {
+						title: field.name,
+						type: 'transfer',
 						enum: field.enum,
 						required: field.required,
 					}
@@ -197,6 +232,22 @@ const FormTool: FC = () => {
 						</Dropdown>
 					</>}
 				>
+					<SchemaForm>
+						<Field
+							title='组件名'
+							name='componentName'
+							type='string'
+						/>
+						<Field
+							title='布局'
+							name='layout'
+							type='string'
+							enum={[
+								{ label: '内联', value: 'inline' },
+								{ label: '垂直', value: 'ver' }
+							]}
+						/>
+					</SchemaForm>
 					{
 						!fields.length ?
 							<Empty
