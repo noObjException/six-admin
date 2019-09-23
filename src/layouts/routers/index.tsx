@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 import { Route, RouteComponentProps } from "react-router-dom";
 import { StaticContext } from "react-router";
-import Products from "pages/product";
-import Users from "pages/user";
-import ProductCategory from "pages/product-category";
+// import Products from "pages/product";
+// import Users from "pages/user";
+// import ProductCategory from "pages/product-category";
 import FormTool from "pages/tools/form";
 import TForm from "pages/test";
+import TableTool from '../../pages/tools/table'
 
 const Index = () => <div>index</div>
 
@@ -18,10 +19,11 @@ interface IRoute {
 
 const routes: IRoute[] = [
   { path: '/', component: Index },
-  { path: '/products', component: Products },
-  { path: '/product-categories', component: ProductCategory },
-  { path: '/users', component: Users },
+  // { path: '/products', component: Products },
+  // { path: '/product-categories', component: ProductCategory },
+  // { path: '/users', component: Users },
   { path: '/tools/form', component: FormTool },
+  { path: '/tools/table', component: TableTool },
   { path: '/test', component: TForm },
 ]
 
