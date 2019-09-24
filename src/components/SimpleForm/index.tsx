@@ -6,19 +6,12 @@ import { Observable } from "rxjs/internal/Observable";
 import BaseProps from "types/base-props";
 
 interface ISimpleForm extends BaseProps {
-  columns?: Columns[]
   schema: any,
   onSubmit?: (val: any) => void,
   showActions?: boolean,
   initialValues?: any,
   value?: any,
   editable?: boolean
-}
-
-interface Columns {
-  label: string,
-  type: 'string' | 'number' | 'upload',
-  key: string,
 }
 
 const SimpleForm: FC<ISimpleForm> = (props) => {

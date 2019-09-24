@@ -2,12 +2,13 @@ import React, { createContext, FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import { Button, Dropdown, Empty, Menu, message, Table, Tag } from 'antd'
 import { isEmpty } from 'lodash'
-import ShowCode from '../form/components/ShowCode'
-import TableOption from './TableOption'
+import ShowCode from './components/ShowCode'
+import TableOption from './components/TableOption'
 import { now } from 'utils/time'
 import { ColumnProps } from 'antd/lib/table'
 import faker from 'faker'
-import SchemaForm, { Field } from '@uform/antd'
+// import SchemaForm, { Field } from '@uform/antd'
+import SimpleTable from '../../../components/SimpleTable'
 
 
 const HISTORY_KEY = 'schema_table_history'
@@ -121,8 +122,6 @@ const TableTool: FC = () => {
 		setEditIndex(index)
 	}
 
-	console.log(fields)
-
 	return (
 		<TableToolContext.Provider value={contextValue}>
 			<div className='flex'>
@@ -135,18 +134,18 @@ const TableTool: FC = () => {
 						</Dropdown>
 					</>}
 				>
-					<SchemaForm>
-						<Field
-							title='组件名'
-							name='componentName'
-							type='string'
-						/>
-						<Field
-							title='多选框'
-							name='multi'
-							type='boolean'
-						/>
-					</SchemaForm>
+					{/*<SchemaForm>*/}
+					{/*	<Field*/}
+					{/*		title='组件名'*/}
+					{/*		name='componentName'*/}
+					{/*		type='string'*/}
+					{/*	/>*/}
+					{/*	<Field*/}
+					{/*		title='多选框'*/}
+					{/*		name='multi'*/}
+					{/*		type='boolean'*/}
+					{/*	/>*/}
+					{/*</SchemaForm>*/}
 					{
 						!fields.length ?
 							<Empty
@@ -205,7 +204,7 @@ const TableTool: FC = () => {
 				>
 					{
 						!isEmpty(columns) && (
-							<Table
+							<SimpleTable
 								rowKey='id'
 								columns={columns}
 								dataSource={getMockData(fields.map(i => ({ key: i.key, type: i.type, enum: i.enum })))}
@@ -230,7 +229,7 @@ export default TableTool
 const getMockData = (schemas: { key: string, type: string, enum?: { label: string, value: any, color?: string }[] }[]) => {
 	return [ ...new Array(200) ].map((_, i) => {
 		const types: { [key: string]: string | number } = {
-			text: faker.random.word(),
+			string: faker.random.word(),
 			number: faker.random.number(8),
 			picture: faker.random.word(),
 		}
@@ -245,7 +244,6 @@ const getMockData = (schemas: { key: string, type: string, enum?: { label: strin
 			}
 		})
 
-		console.log(item)
 		return item
 	})
 }

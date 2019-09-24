@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC, useContext, useState } from 'react'
 import { Modal, Button } from 'antd'
 import SchemaForm, {
 	Field,
@@ -6,7 +6,7 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { ITableField, TableToolContext } from '../index'
+import { ITableField, TableToolContext } from '../../index'
 
 
 const actions = createFormActions()
@@ -22,6 +22,7 @@ interface IProps {
 
 const TableOption: FC<IProps> = (props) => {
 	const { addField, updateField } = useContext(TableToolContext)
+	const [ visibleOptions, setVisibleOptions ] = useState(false)
 
 	const handleSubmit = (field: ITableField) => {
 		field.dataIndex = field.key
@@ -60,6 +61,12 @@ const TableOption: FC<IProps> = (props) => {
 						wrapperCol={21}
 						initialValues={props.initialValues}
 						onSubmit={handleSubmit}
+						effects={($) => {
+							$('selectType', 'type')
+								.subscribe(({ payload }) => {
+									setVisibleOptions([ 'tags', ].includes(payload))
+								})
+						}}
 					>
 						<Field
 							type='string'
@@ -79,39 +86,50 @@ const TableOption: FC<IProps> = (props) => {
 							title='类型'
 							name='type'
 							enum={[
-								{ label: '文字', value: 'text' },
+								{ label: '文字', value: 'string' },
 								{ label: '数字', value: 'number' },
 								{ label: '图片', value: 'picture' },
 								{ label: '标签', value: 'tags' },
 							]}
-						/>
-						<Field
-							title='标签'
-							name='enum'
-							type='array'
-							x-component='table'
-							x-props={{
-								width: 60,
-								operationsWidth: 1,
+							x-effect={dispatch => {
+								return {
+									onChange(val: any) {
+										dispatch('selectType', val)
+									},
+								}
 							}}
-						>
-							<Field type='object'>
-								<Field name='label' type='string' title='名称' />
-								<Field name='value' type='string' title='值' />
-								<Field
-									name='color'
-									type='string'
-									title='颜色'
-									enum={[
-										{ label: 'magenta', value: 'magenta' },
-										{ label: 'red', value: 'red' },
-										{ label: 'volcano', value: 'volcano' },
-										{ label: 'orange', value: 'orange' },
-										{ label: 'gold', value: 'gold' },
-									]}
-								/>
+						/>
+
+						{
+							visibleOptions &&
+							<Field
+									title='标签'
+									name='enum'
+									type='array'
+									x-component='table'
+									x-props={{
+										width: 60,
+										operationsWidth: 1,
+									}}
+							>
+								<Field type='object'>
+									<Field name='label' type='string' title='名称' />
+									<Field name='value' type='string' title='值' />
+									<Field
+											name='color'
+											type='string'
+											title='颜色'
+											enum={[
+												{ label: 'magenta', value: 'magenta' },
+												{ label: 'red', value: 'red' },
+												{ label: 'volcano', value: 'volcano' },
+												{ label: 'orange', value: 'orange' },
+												{ label: 'gold', value: 'gold' },
+											]}
+									/>
+								</Field>
 							</Field>
-						</Field>
+						}
 					</SchemaForm>
 				</Modal>
 			</FormProvider>
