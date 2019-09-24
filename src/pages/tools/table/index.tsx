@@ -1,12 +1,14 @@
 import React, { createContext, FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
-import { Button, Dropdown, Empty, Menu, message, Table } from 'antd'
+import { Button, Dropdown, Empty, Menu, message, Table, Tag } from 'antd'
 import { isEmpty } from 'lodash'
 import ShowCode from '../form/components/ShowCode'
 import TableOption from './TableOption'
 import { now } from 'utils/time'
 import { ColumnProps } from 'antd/lib/table'
 import faker from 'faker'
+import SchemaForm, { Field } from '@uform/antd'
+
 
 const HISTORY_KEY = 'schema_table_history'
 
@@ -16,6 +18,7 @@ export interface ITableField {
 	key: string,
 	dataIndex: string,
 	type: string,
+	enum?: { label: string, value: any, color: string }[]
 }
 
 
@@ -69,9 +72,12 @@ const TableTool: FC = () => {
 	const [ state, dispatch ] = useReducer(reducers, initState)
 	const contextValue: ITableToolState & ITableToolReducer = {
 		fields: state.fields,
-		addField: (payload: any) => dispatch({ type: 'ADD_FIELD', payload }),
-		setField: (payload: any) => dispatch({ type: 'SET_FIELD', payload }),
-		updateField: (index: number, payload: any) => dispatch({ type: 'UPDATE_FIELD', payload: { index, payload } }),
+		addField: (payload: ITableField) => dispatch({ type: 'ADD_FIELD', payload }),
+		setField: (payload: ITableField) => dispatch({ type: 'SET_FIELD', payload }),
+		updateField: (index: number, payload: ITableField) => dispatch({
+			type: 'UPDATE_FIELD',
+			payload: { index, payload },
+		}),
 		delField: (payload: number) => dispatch({ type: 'DEL_FIELD', payload }),
 	}
 	const { fields, setField, delField } = contextValue
@@ -129,6 +135,18 @@ const TableTool: FC = () => {
 						</Dropdown>
 					</>}
 				>
+					<SchemaForm>
+						<Field
+							title='组件名'
+							name='componentName'
+							type='string'
+						/>
+						<Field
+							title='多选框'
+							name='multi'
+							type='boolean'
+						/>
+					</SchemaForm>
 					{
 						!fields.length ?
 							<Empty
@@ -151,6 +169,7 @@ const TableTool: FC = () => {
 								columns={[
 									{ title: 'title', key: 'title', dataIndex: 'title' },
 									{ title: 'key', key: 'key', dataIndex: 'key' },
+									{ title: 'type', key: 'type', dataIndex: 'type' },
 									{
 										title: 'actions',
 										key: 'actions',
@@ -189,7 +208,7 @@ const TableTool: FC = () => {
 							<Table
 								rowKey='id'
 								columns={columns}
-								dataSource={getMockData(fields.map(i => ({ key: i.key, type: i.type })))}
+								dataSource={getMockData(fields.map(i => ({ key: i.key, type: i.type, enum: i.enum })))}
 							/>
 						)
 					}
@@ -208,16 +227,22 @@ const TableTool: FC = () => {
 
 export default TableTool
 
-const getMockData = (schemas: { key: string, type: string }[]) => {
-	return [ ...new Array(200) ].map(i => {
-		const types: {[key: string]: string|number} = {
+const getMockData = (schemas: { key: string, type: string, enum?: { label: string, value: any, color?: string }[] }[]) => {
+	return [ ...new Array(200) ].map((_, i) => {
+		const types: { [key: string]: string | number } = {
 			text: faker.random.word(),
 			number: faker.random.number(8),
 			picture: faker.random.word(),
 		}
-		const item: any = {id: i}
+		const item: any = { id: i }
 		schemas.forEach(schema => {
-			item[schema.key] = types[schema.type]
+			if (schema.type === 'tags' && schema.enum) {
+				const chooseIndex = faker.random.number(schema.enum.length - 1)
+				item[schema.key] = <Tag color={schema.enum[chooseIndex].color}>{schema.enum[chooseIndex].label}</Tag>
+			} else if (schema.type === 'status') {
+			} else {
+				item[schema.key] = types[schema.type]
+			}
 		})
 
 		console.log(item)
