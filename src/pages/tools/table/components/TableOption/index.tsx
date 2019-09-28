@@ -49,8 +49,12 @@ const TableOption: FC<IProps> = (props) => {
 					visible={props.visible}
 					width={'54vw'}
 					onCancel={() => props.onCancel && props.onCancel()}
-					footer={<><Button onClick={props.onCancel}>取消</Button><FormConsumer>{({ submit }) => (
-						<Button type='primary' onClick={submit}>确定</Button>)}</FormConsumer></>}
+					footer={<>
+						<Button onClick={props.onCancel}>取消</Button>
+						<FormConsumer>
+							{({ submit }) => (<Button type='primary' onClick={submit}>确定</Button>)}
+						</FormConsumer>
+					</>}
 				>
 					<SchemaForm
 						className='overflow-scroll'
@@ -64,7 +68,7 @@ const TableOption: FC<IProps> = (props) => {
 						effects={($) => {
 							$('selectType', 'type')
 								.subscribe(({ payload }) => {
-									setVisibleOptions([ 'tags', ].includes(payload))
+									setVisibleOptions([ 'tags' ].includes(payload))
 								})
 						}}
 					>

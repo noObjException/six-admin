@@ -1,9 +1,10 @@
 import React, { useState, FC, useEffect } from 'react'
-import { Modal, Tabs, message } from 'antd';
-import copy from 'copy-to-clipboard';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+import { Modal, Tabs, message } from 'antd'
+import copy from 'copy-to-clipboard'
+import SyntaxHighlighter from 'react-syntax-highlighter'
 // @ts-ignore
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+
 
 const tsxTemp = (code: string) => (
   `import React, { FC } from 'react'
@@ -29,7 +30,7 @@ const jsxTemp = (code: string) => (
   `import React from 'react'
 import SimpleForm from 'components/SimpleForm'
 
-const Table: FC = () => {
+const Table = () => {
 
   const columns = ${code}
   const data = []
@@ -45,22 +46,27 @@ const Table: FC = () => {
 export default Table`
 )
 
-const codeHighlighter = (code: string) => <SyntaxHighlighter language="javascript" style={docco}>{code}</SyntaxHighlighter>
+const codeHighlighter = (code: string) => <SyntaxHighlighter
+  language='javascript' style={docco}
+>{code}</SyntaxHighlighter>
+
 
 interface IProps {
-  data: object
+  data: any
 }
+
+
 const ShowCode: FC<IProps> = (props) => {
-  const [visible, setVisible] = useState(false)
-  const [copyText, setCopyText] = useState('')
+  const [ visible, setVisible ] = useState(false)
+  const [ copyText, setCopyText ] = useState('')
 
   // have to set it
   useEffect(() => {
     const code = JSON.stringify(props.data, null, 2)
     setCopyText(code)
-  }, [props.data])
+  }, [ props.data ])
 
-  const handleChange = (key: 'json' | 'tsx' | 'jsx') => {
+  const handleChange = (key: CodeType) => {
     const json = JSON.stringify(props.data, null, 2)
     switch (key) {
       case 'json':
@@ -86,7 +92,7 @@ const ShowCode: FC<IProps> = (props) => {
         okText='复制'
         onOk={() => copy(copyText, { debug: true }) && message.success('复制成功')}
       >
-        <Tabs type="card" onChange={(key) => handleChange(key as 'json' | 'tsx' | 'jsx')}>
+        <Tabs type='card' onChange={(key) => handleChange(key as CodeType)}>
           <Tabs.TabPane tab='JSON' key='json'>
             {codeHighlighter(copyText)}
           </Tabs.TabPane>
@@ -103,3 +109,5 @@ const ShowCode: FC<IProps> = (props) => {
 }
 
 export default ShowCode
+
+type CodeType = 'json' | 'tsx' | 'jsx'

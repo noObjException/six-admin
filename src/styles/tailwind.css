@@ -2011,7 +2011,7 @@ svg {
 }
 
 .h-content {
-  height: 90vh !important;
+  height: 80vh !important;
 }
 
 .leading-none {
@@ -6700,7 +6700,7 @@ svg {
   }
 
   .sm\:h-content {
-    height: 90vh !important;
+    height: 80vh !important;
   }
 
   .sm\:leading-none {

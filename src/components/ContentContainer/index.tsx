@@ -10,12 +10,14 @@ interface IProps extends BaseProps {
 const ContentContainer: FC<IProps> = (props) => {
 
   return (
-    <div className={`m-4 p-4 bg-white h-content shadow overflow-scroll ${props.className}`}>
+    <div className={`m-4 p-4 bg-white shadow pb-2 ${props.className}`}>
       <div className='flex justify-between items-center mb-4 pb-2 border-b border-solid border-gray'>
         <div className='text-lg'>{props.title}</div>
         <div className=''>{props.extra}</div>
       </div>
-      {props.children}
+      <div className='overflow-scroll h-content'>
+        {props.children}
+      </div>
     </div>
   )
 }
