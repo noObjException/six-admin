@@ -6,7 +6,7 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { ITableField, TableToolContext } from '../../index'
+import { ITableField, TableToolContext } from 'components/SimpleTable/store'
 
 
 const actions = createFormActions()

@@ -1,122 +1,67 @@
-import React, { createContext, FC, useReducer, useState } from 'react'
+import React, { FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import { Button, Dropdown, Empty, Menu, message, Table } from 'antd'
 import { isEmpty } from 'lodash'
 import ShowCode from './components/ShowCode'
 import TableOption from './components/TableOption'
-import { now } from 'utils/time'
 import faker from 'faker'
 import SchemaForm, { Field, FormCard, FormConsumer, FormProvider, FormSlot } from '@uform/antd'
 import SimpleTable, { IEnum, ISimpleTable } from 'components/SimpleTable'
-
-
-const HISTORY_KEY = 'schema_table_history'
+import {
+	initState,
+	ITableField,
+	ITableToolReducer,
+	ITableToolState,
+	tableReducers,
+	TableToolContext,
+} from 'components/SimpleTable/store'
+import useHistory from 'hooks/useHistory'
 
 
 export interface ITableForm {
 	componentName: string,
-	show: Array<'checkbox'|'actions'>,
-	type: 'graphql' | 'restful' | 'custom',
+	show?: Array<'checkbox' | 'actions'>,
+	type?: 'graphql' | 'restful' | 'custom',
 }
 
-
-export interface ITableField {
-	title: string,
-	key: string,
-	dataIndex: string,
-	type: 'string' | 'number' | 'picture' | 'tags',
-	enums?: IEnum[]
-}
-
-
-export interface ITableToolState {
-	fields: ITableField[],
-}
-
-
-export interface ITableToolReducer {
-	addField(field: any): void,
-
-	setField(field: any): void,
-
-	updateField(index: number, field: any): void,
-
-	delField(field: any): void,
-}
-
-
-const defaultFunc = (payload: any) => console.log(payload)
-const initState: ITableToolState & ITableToolReducer = {
-	fields: [],
-
-	addField: defaultFunc,
-	setField: defaultFunc,
-	updateField: defaultFunc,
-	delField: defaultFunc,
-}
-
-export const TableToolContext = createContext<ITableToolState & ITableToolReducer>(initState)
-
-export const reducers = (state: ITableToolState, action: { type: string, payload: any }) => {
-	switch (action.type) {
-		case 'ADD_FIELD':
-			return { ...state, fields: [ ...state.fields, action.payload ] }
-		case 'SET_FIELD':
-			return { ...state, fields: action.payload }
-		case 'UPDATE_FIELD':
-			state.fields.splice(action.payload.index, 1, action.payload.payload)
-			return { ...state, fields: [ ...state.fields ] }
-		case 'DEL_FIELD':
-			state.fields.splice(action.payload, 1)
-			return { ...state, fields: [ ...state.fields ] }
-		default:
-			return state
-	}
-}
 
 const TableTool: FC = () => {
-	const [ state, dispatch ] = useReducer(reducers, initState)
+	const [ state, dispatch ] = useReducer(tableReducers, initState)
 	const contextValue: ITableToolState & ITableToolReducer = {
 		fields: state.fields,
 		addField: (payload: ITableField) => dispatch({ type: 'ADD_FIELD', payload }),
 		setField: (payload: ITableField) => dispatch({ type: 'SET_FIELD', payload }),
-		updateField: (index: number, payload: ITableField) => dispatch({ type: 'UPDATE_FIELD', payload: { index, payload }}),
+		updateField: (index: number, payload: ITableField) => dispatch({
+			type: 'UPDATE_FIELD',
+			payload: { index, payload },
+		}),
 		delField: (payload: number) => dispatch({ type: 'DEL_FIELD', payload }),
 	}
 	const { fields, setField, delField } = contextValue
+	const { histories, addHistory } = useHistory()
 
 	const [ tableConfig, setTableConfig ] = useState<ISimpleTable>({} as ISimpleTable)
-	const preview = (tableProps: ITableForm) => {
-		setTableConfig({
+	const preview = (tableProps: any) => {
+		const record = {
 			componentName: tableProps.componentName,
-			showCheckbox: tableProps.show.includes('checkbox'),
-			showActions: tableProps.show.includes('actions'),
+			showCheckbox: tableProps.show && tableProps.show.includes('checkbox'),
+			showActions: tableProps.show && tableProps.show.includes('actions'),
 			columns: fields.map(({ title, key, dataIndex, type, enums }) => ({ title, key, dataIndex, type, enums })),
 			data: getMockData(fields.map(i => ({ key: i.key, type: i.type, enums: i.enums }))),
-		})
-		addHistory(fields)
+		}
+		setTableConfig(record)
+		addHistory(record)
 	}
 
-	const [ histories, setHistories ] = useState<any[]>(JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'))
-	// history
-	const addHistory = (val: any) => {
-		const histories: any[] = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]').filter((i: { data: any[] }) => i.data.length > 0)
-		if (histories.length >= 20) {
-			histories.shift()
-		}
-		histories.unshift({ createdAt: now('YYYY-MM-DD HH:mm'), data: val })
-		if (val) {
-			setHistories(histories)
-			localStorage.setItem(HISTORY_KEY, JSON.stringify(histories))
-		}
-	}
 	const historyList = (
 		<Menu onClick={({ key }: { key: any }) => backToHistory(histories[key].data)}>
-			{histories.map((history, index) => (<Menu.Item key={index}>{history.createdAt}</Menu.Item>))}
+			{histories.map((history, index) => (<Menu.Item key={index}>{`${history.createdAt} - ${history.data.componentName}`}</Menu.Item>))}
 		</Menu>
 	)
-	const backToHistory = (fields: any) => {
-		setField(fields)
+
+	const backToHistory = (tableConfig: ISimpleTable) => {
+		setTableConfig(tableConfig)
+		setField(tableConfig.columns)
 		message.success('加载成功')
 	}
 
@@ -153,6 +98,7 @@ const TableTool: FC = () => {
 							labelCol={4}
 							wrapperCol={20}
 							autoAddColon={false}
+							initialValues={tableConfig}
 							effects={($) => {
 								$('selectType', 'type')
 									.subscribe(({ payload }) => {
@@ -273,7 +219,9 @@ const TableTool: FC = () => {
 
 				<ContentContainer
 					className='w-full' title='效果'
-					extra={<ShowCode data={{ componentName: tableConfig.componentName, columns: tableConfig.columns }}><Button type='primary' disabled={isEmpty(tableConfig.columns)}>查看代码</Button></ShowCode>}
+					extra={<ShowCode data={{ componentName: tableConfig.componentName, columns: tableConfig.columns }}><Button
+						type='primary' disabled={isEmpty(tableConfig.columns)}
+					>查看代码</Button></ShowCode>}
 				>
 					{
 						!isEmpty(tableConfig.columns) && (
