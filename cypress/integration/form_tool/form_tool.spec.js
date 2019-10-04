@@ -62,7 +62,7 @@ describe('tt', () => {
 })
 
 describe('test add select option', () => {
-    it('should show select enum table', function () {
+    it('should show select enums table', function () {
 
     });
 })

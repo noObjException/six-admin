@@ -1,27 +1,47 @@
 import React, { FC } from 'react'
-import SimpleForm from 'components/SimpleForm'
+import SimpleTable from 'components/SimpleTable'
 
-const TForm: FC = () => {
+interface Iasd {
+  fds: string
+  dad: string
+  das: string
+  ad3232: string
 
-  const schema = {
-  "type": "object",
-  "properties": {
-    "string": {
-      "title": "输入框",
-      "type": "string",
-      "required": true
-    },
-    "string2": {
-      "title": "输入框",
-      "type": "string",
-      "required": true
-    }
-  }
 }
 
-  return (
-    <SimpleForm schema={schema} />
-  )
-} 
+const asd: FC = () => {
 
-export default TForm
+  const columns = [
+    {
+      "title": "sd",
+      "key": "fds",
+      "dataIndex": "fds"
+    },
+    {
+      "title": "sda",
+      "key": "dad",
+      "dataIndex": "dad"
+    },
+    {
+      "title": "dasd",
+      "key": "das",
+      "dataIndex": "das"
+    },
+    {
+      "title": "sada",
+      "key": "ad3232",
+      "dataIndex": "ad3232"
+    }
+  ]
+
+  const data: any = []
+
+  return (
+    <SimpleTable
+      columns={columns}
+      data={data}
+    />
+  )
+}
+
+export default asd

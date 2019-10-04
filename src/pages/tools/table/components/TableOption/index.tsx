@@ -27,9 +27,10 @@ const TableOption: FC<IProps> = (props) => {
 	const handleSubmit = (field: ITableField) => {
 		field.dataIndex = field.key
 
-		if (field.enum) {
-
+		if (field.enums) {
+			console.log(field)
 		}
+		console.log(field)
 
 		if (props.editIndex !== undefined) {
 			updateField(props.editIndex, field)
@@ -72,18 +73,8 @@ const TableOption: FC<IProps> = (props) => {
 								})
 						}}
 					>
-						<Field
-							type='string'
-							required
-							title='字段名'
-							name='title'
-						/>
-						<Field
-							type='string'
-							required
-							title='字段key'
-							name='key'
-						/>
+						<Field type='string' required title='字段名' name='title' />
+						<Field type='string' required title='字段key' name='key' />
 						<Field
 							type='string'
 							required
@@ -108,7 +99,7 @@ const TableOption: FC<IProps> = (props) => {
 							visibleOptions &&
 							<Field
 									title='标签'
-									name='enum'
+									name='enums'
 									type='array'
 									x-component='table'
 									x-props={{

@@ -4,16 +4,24 @@ import { ColumnProps, TableProps } from 'antd/lib/table'
 
 
 export interface ISimpleTable extends TableProps<any> {
-	columns: Columns[],
+	componentName?: string,
+	columns: IColumns[],
 	data: string | any[],
 	showCheckbox?: boolean,
 	showActions?: boolean,
 }
 
 
-interface Columns extends ColumnProps<any> {
+export interface IEnum {
+	label: string
+	value: any
+	color?: string
+}
+
+
+export interface IColumns extends ColumnProps<any> {
 	type?: 'string' | 'number' | 'picture' | 'tags',
-	enum?: { label: string, value: any, color?: string }[],
+	enums?: IEnum[],
 }
 
 
@@ -36,17 +44,18 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 	}, [ props.showCheckbox ])
 
 	// parse columns
-	const columns: Columns[] = useMemo(() => {
+	const columns: IColumns[] = useMemo(() => {
 		let c = props.columns.map(column => {
-			if (column.enum) {
-				const enums: { [key: string]: any } = {}
-				column.enum.forEach(({ label, value, color }) => {
+			if (column.enums) {
+				const enums: { [key: string]: any } = { default: { label: 'un know', color: '#000' }}
+				column.enums.forEach(({ label, value, color }) => {
 					enums[value] = { label, color }
 				})
+				console.log('enums', enums)
 				return {
 					...column,
 					render: (text: any) => (
-						<Tag color={enums[text].color}>{enums[text].label}</Tag>
+						<Tag color={enums[text || 'default'].color || '#000'}>{enums[text].label || 'un know'}</Tag>
 					),
 				}
 			}

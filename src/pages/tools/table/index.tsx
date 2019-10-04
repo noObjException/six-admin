@@ -1,19 +1,19 @@
 import React, { createContext, FC, useReducer, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
-import { Button, Dropdown, Empty, Menu, message, Table, Tag } from 'antd'
+import { Button, Dropdown, Empty, Menu, message, Table } from 'antd'
 import { isEmpty } from 'lodash'
 import ShowCode from './components/ShowCode'
 import TableOption from './components/TableOption'
 import { now } from 'utils/time'
 import faker from 'faker'
 import SchemaForm, { Field, FormCard, FormConsumer, FormProvider, FormSlot } from '@uform/antd'
-import SimpleTable, { ISimpleTable } from 'components/SimpleTable'
+import SimpleTable, { IEnum, ISimpleTable } from 'components/SimpleTable'
 
 
 const HISTORY_KEY = 'schema_table_history'
 
 
-interface ITableForm {
+export interface ITableForm {
 	componentName: string,
 	show: Array<'checkbox'|'actions'>,
 	type: 'graphql' | 'restful' | 'custom',
@@ -24,8 +24,8 @@ export interface ITableField {
 	title: string,
 	key: string,
 	dataIndex: string,
-	type: string,
-	enum?: { label: string, value: any, color: string }[]
+	type: 'string' | 'number' | 'picture' | 'tags',
+	enums?: IEnum[]
 }
 
 
@@ -88,10 +88,11 @@ const TableTool: FC = () => {
 	const [ tableConfig, setTableConfig ] = useState<ISimpleTable>({} as ISimpleTable)
 	const preview = (tableProps: ITableForm) => {
 		setTableConfig({
+			componentName: tableProps.componentName,
 			showCheckbox: tableProps.show.includes('checkbox'),
 			showActions: tableProps.show.includes('actions'),
-			columns: fields.map(({ title, key, dataIndex }) => ({ title, key, dataIndex })),
-			data: getMockData(fields.map(i => ({ key: i.key, type: i.type, enum: i.enum }))),
+			columns: fields.map(({ title, key, dataIndex, type, enums }) => ({ title, key, dataIndex, type, enums })),
+			data: getMockData(fields.map(i => ({ key: i.key, type: i.type, enums: i.enums }))),
 		})
 		addHistory(fields)
 	}
@@ -272,7 +273,7 @@ const TableTool: FC = () => {
 
 				<ContentContainer
 					className='w-full' title='效果'
-					extra={<ShowCode data={tableConfig.columns}><Button type='primary' disabled={isEmpty(tableConfig.columns)}>查看代码</Button></ShowCode>}
+					extra={<ShowCode data={{ componentName: tableConfig.componentName, columns: tableConfig.columns }}><Button type='primary' disabled={isEmpty(tableConfig.columns)}>查看代码</Button></ShowCode>}
 				>
 					{
 						!isEmpty(tableConfig.columns) && (
@@ -301,7 +302,7 @@ const TableTool: FC = () => {
 export default TableTool
 
 // get mock data
-const getMockData = (schemas: { key: string, type: string, enum?: { label: string, value: any, color?: string }[] }[]) => {
+const getMockData = (schemas: { key: string, type: string, enums?: IEnum[] }[]) => {
 	return [ ...new Array(200) ].map((_, i) => {
 		const types: { [key: string]: string | number } = {
 			string: faker.random.word(),
@@ -310,9 +311,9 @@ const getMockData = (schemas: { key: string, type: string, enum?: { label: strin
 		}
 		const item: any = { id: i }
 		schemas.forEach(schema => {
-			if (schema.type === 'tags' && schema.enum) {
-				const chooseIndex = faker.random.number(schema.enum.length - 1)
-				item[schema.key] = <Tag color={schema.enum[chooseIndex].color}>{schema.enum[chooseIndex].label}</Tag>
+			if (schema.type === 'tags' && schema.enums) {
+				const chooseIndex = faker.random.number(schema.enums.length - 1)
+				item[schema.key] = schema.enums[chooseIndex].value
 			} else if (schema.type === 'status') {
 			} else {
 				item[schema.key] = types[schema.type]
