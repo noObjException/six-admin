@@ -6,7 +6,7 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { ITableField, TableToolContext } from 'components/SimpleTable/store'
+import { ITableField, TableToolContext } from '../../hook'
 
 
 const actions = createFormActions()
@@ -80,6 +80,7 @@ const TableOption: FC<IProps> = (props) => {
 							required
 							title='类型'
 							name='type'
+							default='string'
 							enum={[
 								{ label: '文字', value: 'string' },
 								{ label: '数字', value: 'number' },

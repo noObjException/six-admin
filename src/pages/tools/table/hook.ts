@@ -1,5 +1,6 @@
-import { IEnum } from './index'
-import { createContext } from 'react'
+import { createContext, useReducer } from 'react'
+
+import { IEnum } from 'components/SimpleTable'
 
 export interface ITableToolReducer {
 	addField(field: any): void,
@@ -25,11 +26,14 @@ export const initState: ITableToolState & ITableToolReducer = {
 export const TableToolContext = createContext<ITableToolState & ITableToolReducer>(initState)
 
 
+type ITableFieldType = 'string' | 'number' | 'picture' | 'tags'
+
+
 export interface ITableField {
 	title: string,
 	key: string,
 	dataIndex: string,
-	type: 'string' | 'number' | 'picture' | 'tags',
+	type: ITableFieldType,
 	enums?: IEnum[]
 }
 
@@ -54,4 +58,17 @@ export const tableReducers = (state: ITableToolState, action: { type: string, pa
 		default:
 			return state
 	}
+}
+export default function useTableTool() {
+	const [ state, dispatch ] = useReducer(tableReducers, initState)
+	return {
+		fields: state.fields,
+		addField: (payload: ITableField) => dispatch({ type: 'ADD_FIELD', payload }),
+		setField: (payload: ITableField) => dispatch({ type: 'SET_FIELD', payload }),
+		updateField: (index: number, payload: ITableField) => dispatch({
+			type: 'UPDATE_FIELD',
+			payload: { index, payload },
+		}),
+		delField: (payload: number) => dispatch({ type: 'DEL_FIELD', payload }),
+	} as ITableToolReducer & ITableToolState
 }

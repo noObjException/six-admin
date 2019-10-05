@@ -1,21 +1,14 @@
-import React, { FC, useReducer, useState } from 'react'
+import React, { FC, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import { Button, Dropdown, Empty, Menu, message, Table } from 'antd'
 import { isEmpty } from 'lodash'
 import ShowCode from './components/ShowCode'
 import TableOption from './components/TableOption'
-import faker from 'faker'
 import SchemaForm, { Field, FormCard, FormConsumer, FormProvider, FormSlot } from '@uform/antd'
-import SimpleTable, { IEnum, ISimpleTable } from 'components/SimpleTable'
-import {
-	initState,
-	ITableField,
-	ITableToolReducer,
-	ITableToolState,
-	tableReducers,
-	TableToolContext,
-} from 'components/SimpleTable/store'
+import SimpleTable, { ISimpleTable } from 'components/SimpleTable'
 import useHistory from 'hooks/useHistory'
+import { getMockData } from 'utils/mock'
+import useTableTool, { TableToolContext } from './hook'
 
 
 export interface ITableForm {
@@ -26,17 +19,8 @@ export interface ITableForm {
 
 
 const TableTool: FC = () => {
-	const [ state, dispatch ] = useReducer(tableReducers, initState)
-	const contextValue: ITableToolState & ITableToolReducer = {
-		fields: state.fields,
-		addField: (payload: ITableField) => dispatch({ type: 'ADD_FIELD', payload }),
-		setField: (payload: ITableField) => dispatch({ type: 'SET_FIELD', payload }),
-		updateField: (index: number, payload: ITableField) => dispatch({
-			type: 'UPDATE_FIELD',
-			payload: { index, payload },
-		}),
-		delField: (payload: number) => dispatch({ type: 'DEL_FIELD', payload }),
-	}
+
+	const contextValue = useTableTool()
 	const { fields, setField, delField } = contextValue
 	const { histories, addHistory } = useHistory()
 
@@ -55,7 +39,8 @@ const TableTool: FC = () => {
 
 	const historyList = (
 		<Menu onClick={({ key }: { key: any }) => backToHistory(histories[key].data)}>
-			{histories.map((history, index) => (<Menu.Item key={index}>{`${history.createdAt} - ${history.data.componentName}`}</Menu.Item>))}
+			{histories.map((history, index) => (
+				<Menu.Item key={index}>{`${history.createdAt} - ${history.data.componentName}`}</Menu.Item>))}
 		</Menu>
 	)
 
@@ -248,26 +233,3 @@ const TableTool: FC = () => {
 }
 
 export default TableTool
-
-// get mock data
-const getMockData = (schemas: { key: string, type: string, enums?: IEnum[] }[]) => {
-	return [ ...new Array(200) ].map((_, i) => {
-		const types: { [key: string]: string | number } = {
-			string: faker.random.word(),
-			number: faker.random.number(8),
-			picture: faker.random.word(),
-		}
-		const item: any = { id: i }
-		schemas.forEach(schema => {
-			if (schema.type === 'tags' && schema.enums) {
-				const chooseIndex = faker.random.number(schema.enums.length - 1)
-				item[schema.key] = schema.enums[chooseIndex].value
-			} else if (schema.type === 'status') {
-			} else {
-				item[schema.key] = types[schema.type]
-			}
-		})
-
-		return item
-	})
-}
