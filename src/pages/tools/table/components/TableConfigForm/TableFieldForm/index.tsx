@@ -15,7 +15,7 @@ const fieldTypes = [
 	{ label: '文字', value: 'string' },
 	{ label: '数字', value: 'number' },
 	{ label: '日期', value: 'date' },
-	{ label: '图片', value: 'picture' },
+	{ label: '图片', value: 'image' },
 	{ label: '标签', value: 'tags' },
 ]
 

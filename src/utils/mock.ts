@@ -18,7 +18,7 @@ export const getMockData = (schemas: IMockDataSchema[], num: number = 200) => {
 		const types: { [key: string]: string | number } = {
 			string: faker.random.word(),
 			number: faker.random.number(8),
-			picture: faker.random.word(),
+			image: faker.image.imageUrl(100, 100),
 			date: formatTime(faker.date.recent(2)),
 		}
 

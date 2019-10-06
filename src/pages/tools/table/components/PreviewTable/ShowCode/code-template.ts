@@ -7,7 +7,7 @@ export const getTsxTemp = (props: ITableForm): string => {
 	const types = {
 		string: 'string',
 		number: 'number',
-		picture: 'string',
+		image: 'string',
 		tags: 'IEnum[]',
 		default: 'string'
 	}

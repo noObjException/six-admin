@@ -18,7 +18,9 @@ export interface IEnum {
 	color?: string,
 }
 
-export type ITableFieldType = 'string' | 'number' | 'picture' | 'tags'
+
+export type ITableFieldType = 'string' | 'number' | 'image' | 'tags'
+
 
 export interface IColumn extends ColumnProps<any> {
 	title: string,
@@ -50,11 +52,10 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 	const columns: IColumn[] = useMemo(() => {
 		let c = props.columns.map(column => {
 			if (column.enums) {
-				const enums: { [key: string]: any } = { default: { label: 'un know', color: '#000' }}
+				const enums: { [key: string]: any } = { default: { label: 'un know', color: '#000' } }
 				column.enums.forEach(({ label, value, color }) => {
 					enums[value] = { label, color }
 				})
-				console.log('enums', enums)
 				return {
 					...column,
 					render: (text: any) => (
@@ -63,25 +64,31 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 				}
 			}
 
+			if (column.type === 'image') {
+				return {
+					...column,
+					render: (text: any) => (
+						<img src={text} alt='' className='w-12 h-12' />
+					)
+				}
+			}
+
 			return column
 		})
 
 		// add actions button
 		if (props.showActions) {
-			c = [
-				...c,
-				{
-					title: '操作',
-					key: 'actions',
-					render: () => (
-						<>
-							<Button size='small' type='link'>编辑</Button>
-							<Divider type='vertical' />
-							<Button size='small' type='link'>删除</Button>
-						</>
-					),
-				},
-			]
+			c.push({
+				title: '操作',
+				key: 'actions',
+				render: () => (
+					<>
+						<Button size='small' type='link'>编辑</Button>
+						<Divider type='vertical' />
+						<Button size='small' type='link'>删除</Button>
+					</>
+				),
+			})
 		}
 
 		return c
