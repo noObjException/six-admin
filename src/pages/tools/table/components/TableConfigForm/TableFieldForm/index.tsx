@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useState } from 'react'
 import { Modal, Button } from 'antd'
 import SchemaForm, {
 	Field,
@@ -7,7 +7,7 @@ import SchemaForm, {
 	FormConsumer,
 } from '@uform/antd'
 import { IColumn } from 'components/SimpleTable'
-import useTableToolState from '../../../hook'
+import { TableToolContext } from '../../../hook'
 
 
 const actions = createFormActions()
@@ -22,7 +22,7 @@ interface IProps {
 
 
 const TableFieldForm: FC<IProps> = (props) => {
-	const { addField, updateField } = useTableToolState()
+	const { addField, updateField, setFields } = useContext(TableToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 
 	const handleSubmit = (field: IColumn) => {
@@ -32,6 +32,7 @@ const TableFieldForm: FC<IProps> = (props) => {
 			updateField(props.editIndex, field)
 		} else {
 			addField(field)
+			setFields([field])
 		}
 
 		props.onCancel && props.onCancel()

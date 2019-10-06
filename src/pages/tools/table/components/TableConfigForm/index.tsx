@@ -1,9 +1,9 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useState } from 'react'
 import ContentContainer from 'components/ContentContainer'
 import SchemaForm, { FormConsumer, FormProvider, FormSlot } from '@uform/react'
 import { Button, Dropdown, Empty, Icon, Menu, message, Table } from 'antd'
 import { Field, FormCard } from '@uform/antd'
-import useTableToolState from '../../hook'
+import { TableToolContext } from '../../hook'
 import useHistory from 'hooks/useHistory'
 import { IColumn } from 'components/SimpleTable'
 import TableFieldForm from './TableFieldForm'
@@ -24,7 +24,7 @@ interface IProps {
 
 
 const TableConfigForm: FC<IProps> = (props) => {
-	const { fields, setField, delField } = useTableToolState()
+	const { fields, setFields, delField } = useContext(TableToolContext)
 	const { histories, addHistory } = useHistory()
 
 	const [ tableConfig, setTableConfig ] = useState<ITableForm>({} as ITableForm)
@@ -54,7 +54,7 @@ const TableConfigForm: FC<IProps> = (props) => {
 
 	const backToHistory = (tableConfig: ITableForm) => {
 		setTableConfig(tableConfig)
-		setField(tableConfig.columns)
+		setFields(tableConfig.columns)
 		message.success('加载成功')
 	}
 
@@ -148,7 +148,7 @@ const TableConfigForm: FC<IProps> = (props) => {
 							title='字段列表'
 							extra={<>
 								<Button icon='plus' className='mr-2' type='primary' onClick={() => setVisible(true)} />
-								<Button icon='delete' onClick={() => setField([])} />
+								<Button icon='delete' onClick={() => setFields([])} />
 							</>}
 						>
 							<FormSlot name=''>
