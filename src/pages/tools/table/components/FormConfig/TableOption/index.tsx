@@ -6,7 +6,8 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { ITableField, TableToolContext } from '../../hook'
+import { TableToolContext } from '../../../hook'
+import { IColumn } from 'components/SimpleTable'
 
 
 const actions = createFormActions()
@@ -24,8 +25,8 @@ const TableOption: FC<IProps> = (props) => {
 	const { addField, updateField } = useContext(TableToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 
-	const handleSubmit = (field: ITableField) => {
-		field.dataIndex = field.key
+	const handleSubmit = (field: IColumn) => {
+		field.dataIndex = field.key.toString()
 
 		if (field.enums) {
 			console.log(field)

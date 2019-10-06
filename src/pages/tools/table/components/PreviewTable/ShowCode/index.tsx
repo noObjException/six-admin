@@ -5,14 +5,14 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 // @ts-ignore
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import { ITableTemp, getTsxTemp, getJsxTemp } from './code-template'
-import { IColumns } from 'components/SimpleTable'
+import { IColumn } from 'components/SimpleTable'
 
 
 const codeHighlighter = (code: string) => <SyntaxHighlighter language='typescript' style={docco}>{code}</SyntaxHighlighter>
 
 export interface ITableTemp {
   componentName?: string,
-  columns: IColumns[],
+  columns: IColumn[],
 }
 
 

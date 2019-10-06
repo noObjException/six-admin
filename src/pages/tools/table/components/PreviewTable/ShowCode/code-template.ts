@@ -1,9 +1,9 @@
-import { IColumns } from 'components/SimpleTable'
+import { IColumn } from 'components/SimpleTable'
 
 
 export interface ITableTemp {
 	componentName?: string,
-	columns: IColumns[],
+	columns: IColumn[],
 }
 
 

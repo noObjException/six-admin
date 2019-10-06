@@ -5,7 +5,7 @@ import { ColumnProps, TableProps } from 'antd/lib/table'
 
 export interface ISimpleTable extends TableProps<any> {
 	componentName?: string,
-	columns: IColumns[],
+	columns: IColumn[],
 	data: string | any[],
 	showCheckbox?: boolean,
 	showActions?: boolean,
@@ -13,14 +13,17 @@ export interface ISimpleTable extends TableProps<any> {
 
 
 export interface IEnum {
-	label: string
-	value: any
-	color?: string
+	label: string,
+	value: any,
+	color?: string,
 }
 
+export type ITableFieldType = 'string' | 'number' | 'picture' | 'tags'
 
-export interface IColumns extends ColumnProps<any> {
-	type?: 'string' | 'number' | 'picture' | 'tags',
+export interface IColumn extends ColumnProps<any> {
+	title: string,
+	key: string | number,
+	type?: ITableFieldType,
 	enums?: IEnum[],
 }
 
@@ -44,7 +47,7 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 	}, [ props.showCheckbox ])
 
 	// parse columns
-	const columns: IColumns[] = useMemo(() => {
+	const columns: IColumn[] = useMemo(() => {
 		let c = props.columns.map(column => {
 			if (column.enums) {
 				const enums: { [key: string]: any } = { default: { label: 'un know', color: '#000' }}
