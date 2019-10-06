@@ -55,15 +55,11 @@ const ShowCode: FC<IProps> = (props) => {
 				onOk={() => copy(copyText, { debug: true }) && message.success('复制成功')}
 			>
 				<Tabs type='card' onChange={(key) => handleChange(key as CodeType)}>
-					<Tabs.TabPane tab='JSON' key='json'>
-						{codeHighlighter(copyText)}
-					</Tabs.TabPane>
-					<Tabs.TabPane tab='TSX' key='tsx'>
-						{codeHighlighter(copyText)}
-					</Tabs.TabPane>
-					<Tabs.TabPane tab='JSX' key='jsx'>
-						{codeHighlighter(copyText)}
-					</Tabs.TabPane>
+					{['json', 'tsx', 'jsx'].map(i => (
+						<Tabs.TabPane tab={i.toUpperCase()} key={i}>
+							{codeHighlighter(copyText)}
+						</Tabs.TabPane>
+					))}
 				</Tabs>
 			</Modal>
 		</>

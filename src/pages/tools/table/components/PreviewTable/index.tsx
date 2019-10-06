@@ -19,7 +19,7 @@ const PreviewTable: FC<IProps> = (props) => {
 	const showActions = schema.show && schema.show.includes('actions')
 	const showCheckbox = schema.show && schema.show.includes('checkbox')
 	const columns = schema.columns || []
-	const mockData = getMockData(columns.map(({ key, type, enums }: IColumn): IMockDataSchema => ({
+	const mockData = schema.type === 'restful' ? schema.url : getMockData(columns.map(({ key, type, enums }: IColumn): IMockDataSchema => ({
 		key,
 		type,
 		enums,

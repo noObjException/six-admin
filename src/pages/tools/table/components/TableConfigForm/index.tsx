@@ -15,6 +15,8 @@ export interface ITableForm {
 	columns: IColumn[],
 	show?: Array<'checkbox' | 'actions'>,
 	type?: 'graphql' | 'restful' | 'custom',
+	data?: string | any[],
+	url?: string,
 }
 
 
@@ -38,6 +40,7 @@ const TableConfigForm: FC<IProps> = (props) => {
 				type,
 				enums,
 			})),
+			data: tableProps.url,
 		}
 		setTableConfig(record)
 		addHistory(record)
@@ -54,6 +57,7 @@ const TableConfigForm: FC<IProps> = (props) => {
 
 	const backToHistory = (tableConfig: ITableForm) => {
 		setTableConfig(tableConfig)
+		setVisibleUrl(tableConfig.type === 'restful')
 		setFields(tableConfig.columns)
 		message.success('加载成功')
 	}
@@ -200,7 +204,6 @@ const TableConfigForm: FC<IProps> = (props) => {
 										</Empty>
 									)
 								}
-								{/*{JSON.stringify(fields)}*/}
 								{
 									fields.length > 0 && (
 										<Table

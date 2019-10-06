@@ -10,7 +10,7 @@ export interface IMockDataSchema {
 }
 
 
-export const getMockData = (schemas: IMockDataSchema[], num: number = 200) => {
+export const getMockData = (schemas: IMockDataSchema[], num: number = 40) => {
 	return [ ...new Array(num) ].map((_, i) => {
 		const item: any = { id: i }
 

@@ -1,12 +1,13 @@
-import React, { FC, useMemo } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { Button, Table, Divider, Tag } from 'antd'
 import { ColumnProps, TableProps } from 'antd/lib/table'
+import request from '../../utils/request'
 
 
 export interface ISimpleTable extends TableProps<any> {
 	componentName?: string,
 	columns: IColumn[],
-	data: string | any[],
+	data?: string | any[],
 	showCheckbox?: boolean,
 	showActions?: boolean,
 }
@@ -95,9 +96,7 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 
 	}, [ props.columns, props.showActions ])
 
-	const dataSource = useMemo(() => {
-		return Array.isArray(props.data) ? props.data : []
-	}, [ props.data ])
+	const { data } = useData(props.data || [])
 
 	return (
 		<div className='overflow-scroll bg-white p-2'>
@@ -105,10 +104,31 @@ const SimpleTable: FC<ISimpleTable> = (props) => {
 				rowSelection={rowSelection}
 				rowKey={props.rowKey || 'id'}
 				columns={columns}
-				dataSource={dataSource}
+				dataSource={data || []}
 			/>
 		</div>
 	)
 }
 
 export default SimpleTable
+
+
+function useData<T = any, Q = any>(source: string| any[], query?: Q) {
+
+	const [ data, setData ] = useState<T[]>([])
+
+	useEffect(() => {
+		if (Array.isArray(source)) {
+			setData(source)
+		} else {
+			fetch(source)
+		}
+
+		async function fetch(url: string) {
+			const response = await request.get<T[]>(url, query)
+			setData(response.data)
+		}
+	}, [ source, query ])
+
+	return { data }
+}
