@@ -12,9 +12,9 @@ import { isEmpty } from 'lodash'
 
 export interface ITableForm {
 	componentName: string,
+	columns: IColumn[],
 	show?: Array<'checkbox' | 'actions'>,
 	type?: 'graphql' | 'restful' | 'custom',
-	columns: IColumn[],
 }
 
 
@@ -69,6 +69,34 @@ const TableConfigForm: FC<IProps> = (props) => {
 
 	// restful url input
 	const [ visibleUrl, setVisibleUrl ] = useState<boolean>(false)
+
+	// 填充模板
+	const temps: { title: string, columns: IColumn[] }[] = [
+		{
+			title: 'id模板',
+			columns: [
+				{ title: 'id', key: 'id', dataIndex: 'id', type: 'string' },
+				{ title: '创建时间', key: 'createdAt', dataIndex: 'createdAt', type: 'string' },
+				{ title: '修改时间', key: 'updatedAt', dataIndex: 'updatedAt', type: 'string' },
+			],
+		},
+		{
+			title: 'id-title模板',
+			columns: [
+				{ title: 'id', key: 'id', dataIndex: 'id', type: 'string' },
+				{ title: '标题', key: 'title', dataIndex: 'title', type: 'string' },
+				{ title: '创建时间', key: 'createdAt', dataIndex: 'createdAt', type: 'string' },
+				{ title: '修改时间', key: 'updatedAt', dataIndex: 'updatedAt', type: 'string' },
+			],
+		},
+	]
+	const tempList = (
+		<Menu onClick={({ key }: { key: any }) => setFields(temps[key].columns)}>
+			{temps.map((i, k) => (
+				<Menu.Item key={k}>{i.title}</Menu.Item>
+			))}
+		</Menu>
+	)
 
 	return (
 		<>
@@ -162,19 +190,17 @@ const TableConfigForm: FC<IProps> = (props) => {
 											}}
 											description={false}
 										>
-											<Dropdown
-												overlay={
-													<Menu onClick={console.log}>
-														<Menu.Item>id-title模板</Menu.Item>
-													</Menu>}
+											<Dropdown.Button
+												overlay={tempList}
+												type='primary'
+												onClick={() => setVisible(true)}
 											>
-												<Button type='primary' onClick={() => setVisible(true)} icon='plus'>
-													字段 <Icon type='down' />
-												</Button>
-											</Dropdown>
+												<Icon type='plus' />字段
+											</Dropdown.Button>
 										</Empty>
 									)
 								}
+								{/*{JSON.stringify(fields)}*/}
 								{
 									fields.length > 0 && (
 										<Table

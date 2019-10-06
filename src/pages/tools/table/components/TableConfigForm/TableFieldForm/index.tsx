@@ -22,7 +22,7 @@ interface IProps {
 
 
 const TableFieldForm: FC<IProps> = (props) => {
-	const { addField, updateField, setFields } = useContext(TableToolContext)
+	const { addField, updateField } = useContext(TableToolContext)
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 
 	const handleSubmit = (field: IColumn) => {
@@ -32,7 +32,6 @@ const TableFieldForm: FC<IProps> = (props) => {
 			updateField(props.editIndex, field)
 		} else {
 			addField(field)
-			setFields([field])
 		}
 
 		props.onCancel && props.onCancel()

@@ -37,8 +37,9 @@ export const tableReducers = (state: ITableToolState, action: { type: string, pa
 		case 'SET_FIELD':
 			return { ...state, fields: action.payload }
 		case 'UPDATE_FIELD':
-			state.fields.splice(action.payload.index, 1, action.payload.payload)
-			return { ...state, fields: [ ...state.fields ] }
+			const copyFields = [ ...state.fields ]
+			copyFields.splice(action.payload.index, 1, action.payload.payload)
+			return { ...state, fields: copyFields }
 		case 'DEL_FIELD':
 			state.fields.splice(action.payload, 1)
 			return { ...state, fields: [ ...state.fields ] }
@@ -46,8 +47,10 @@ export const tableReducers = (state: ITableToolState, action: { type: string, pa
 			return state
 	}
 }
+
 export default function useTableToolState() {
 	const [ state, dispatch ] = useReducer(tableReducers, initState)
+	console.log('state', state)
 
 	return {
 		fields: state.fields,

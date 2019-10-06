@@ -14,7 +14,6 @@ interface IProps {
 
 
 const PreviewTable: FC<IProps> = (props) => {
-
 	const schema = props.schema || {} as ITableForm
 
 	const showActions = schema.show && schema.show.includes('actions')
