@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { Modal, Button } from 'antd'
 import SchemaForm, {
 	Field,
@@ -6,8 +6,8 @@ import SchemaForm, {
 	FormProvider,
 	FormConsumer,
 } from '@uform/antd'
-import { TableToolContext } from '../../../hook'
 import { IColumn } from 'components/SimpleTable'
+import useTableToolState from '../../../hook'
 
 
 const actions = createFormActions()
@@ -21,17 +21,12 @@ interface IProps {
 }
 
 
-const TableOption: FC<IProps> = (props) => {
-	const { addField, updateField } = useContext(TableToolContext)
+const TableFieldForm: FC<IProps> = (props) => {
+	const { addField, updateField } = useTableToolState()
 	const [ visibleOptions, setVisibleOptions ] = useState(false)
 
 	const handleSubmit = (field: IColumn) => {
 		field.dataIndex = field.key.toString()
-
-		if (field.enums) {
-			console.log(field)
-		}
-		console.log(field)
 
 		if (props.editIndex !== undefined) {
 			updateField(props.editIndex, field)
@@ -99,7 +94,8 @@ const TableOption: FC<IProps> = (props) => {
 
 						{
 							visibleOptions &&
-							<Field
+							(
+								<Field
 									title='标签'
 									name='enums'
 									type='array'
@@ -108,11 +104,11 @@ const TableOption: FC<IProps> = (props) => {
 										width: 60,
 										operationsWidth: 1,
 									}}
-							>
-								<Field type='object'>
-									<Field name='label' type='string' title='名称' />
-									<Field name='value' type='string' title='值' />
-									<Field
+								>
+									<Field type='object'>
+										<Field name='label' type='string' title='名称' />
+										<Field name='value' type='string' title='值' />
+										<Field
 											name='color'
 											type='string'
 											title='颜色'
@@ -123,9 +119,10 @@ const TableOption: FC<IProps> = (props) => {
 												{ label: 'orange', value: 'orange' },
 												{ label: 'gold', value: 'gold' },
 											]}
-									/>
+										/>
+									</Field>
 								</Field>
-							</Field>
+							)
 						}
 					</SchemaForm>
 				</Modal>
@@ -134,4 +131,4 @@ const TableOption: FC<IProps> = (props) => {
 	)
 }
 
-export default TableOption
+export default TableFieldForm

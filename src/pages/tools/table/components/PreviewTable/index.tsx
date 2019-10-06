@@ -5,7 +5,7 @@ import SimpleTable, { IColumn } from 'components/SimpleTable'
 import { getMockData, IMockDataSchema } from 'utils/mock'
 import ContentContainer from 'components/ContentContainer'
 import { isEmpty } from 'lodash'
-import { ITableForm } from '../FormConfig'
+import { ITableForm } from '../TableConfigForm'
 
 
 interface IProps {

@@ -6,7 +6,7 @@ import { Field, FormCard } from '@uform/antd'
 import useTableToolState from '../../hook'
 import useHistory from 'hooks/useHistory'
 import { IColumn } from 'components/SimpleTable'
-import TableOption from './TableOption'
+import TableFieldForm from './TableFieldForm'
 import { isEmpty } from 'lodash'
 
 
@@ -23,9 +23,8 @@ interface IProps {
 }
 
 
-const FormConfig: FC<IProps> = (props) => {
-	const contextValue = useTableToolState()
-	const { fields, setField, delField } = contextValue
+const TableConfigForm: FC<IProps> = (props) => {
+	const { fields, setField, delField } = useTableToolState()
 	const { histories, addHistory } = useHistory()
 
 	const [ tableConfig, setTableConfig ] = useState<ITableForm>({} as ITableForm)
@@ -218,7 +217,7 @@ const FormConfig: FC<IProps> = (props) => {
 				</ContentContainer>
 			</FormProvider>
 
-			<TableOption
+			<TableFieldForm
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				initialValues={initialValues}
@@ -228,4 +227,4 @@ const FormConfig: FC<IProps> = (props) => {
 	)
 }
 
-export default FormConfig
+export default TableConfigForm

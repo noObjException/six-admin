@@ -33,6 +33,7 @@ export interface ITableToolState {
 
 
 export const tableReducers = (state: ITableToolState, action: { type: string, payload: any }) => {
+	console.log('action', action)
 	switch (action.type) {
 		case 'ADD_FIELD':
 			return { ...state, fields: [ ...state.fields, action.payload ] }
@@ -50,6 +51,7 @@ export const tableReducers = (state: ITableToolState, action: { type: string, pa
 }
 export default function useTableToolState() {
 	const [ state, dispatch ] = useReducer(tableReducers, initState)
+
 	return {
 		fields: state.fields,
 		addField: (payload: IColumn) => dispatch({ type: 'ADD_FIELD', payload }),
