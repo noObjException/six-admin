@@ -1,5 +1,6 @@
 import { IEnum, ITableFieldType } from 'components/SimpleTable'
 import faker from 'faker'
+import { formatTime } from './time'
 
 
 export interface IMockDataSchema {
@@ -18,6 +19,7 @@ export const getMockData = (schemas: IMockDataSchema[], num: number = 200) => {
 			string: faker.random.word(),
 			number: faker.random.number(8),
 			picture: faker.random.word(),
+			date: formatTime(faker.date.recent(2)),
 		}
 
 		schemas.forEach(schema => {

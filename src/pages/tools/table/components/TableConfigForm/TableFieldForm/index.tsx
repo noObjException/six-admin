@@ -11,7 +11,13 @@ import { TableToolContext } from '../../../hook'
 
 
 const actions = createFormActions()
-
+const fieldTypes = [
+	{ label: '文字', value: 'string' },
+	{ label: '数字', value: 'number' },
+	{ label: '日期', value: 'date' },
+	{ label: '图片', value: 'picture' },
+	{ label: '标签', value: 'tags' },
+]
 
 interface IProps {
 	initialValues?: any,
@@ -77,12 +83,7 @@ const TableFieldForm: FC<IProps> = (props) => {
 							title='类型'
 							name='type'
 							default='string'
-							enum={[
-								{ label: '文字', value: 'string' },
-								{ label: '数字', value: 'number' },
-								{ label: '图片', value: 'picture' },
-								{ label: '标签', value: 'tags' },
-							]}
+							enum={fieldTypes}
 							x-effect={dispatch => {
 								return {
 									onChange(val: any) {
