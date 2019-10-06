@@ -52,7 +52,6 @@ const initState: IFormToolState & IFormToolReducer = {
 export const FormToolContext = createContext<IFormToolState & IFormToolReducer>(initState)
 
 export const reducers = (state: IFormToolState, action: { type: string, payload: any }) => {
-	console.log(action)
 	switch (action.type) {
 		case 'ADD_FIELD':
 			return { ...state, fields: [ ...state.fields, action.payload ] }

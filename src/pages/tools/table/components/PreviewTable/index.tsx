@@ -17,7 +17,6 @@ const PreviewTable: FC<IProps> = (props) => {
 
 	const schema = props.schema || {} as ITableForm
 
-	const componentName = schema.componentName
 	const showActions = schema.show && schema.show.includes('actions')
 	const showCheckbox = schema.show && schema.show.includes('checkbox')
 	const columns = schema.columns || []
@@ -31,7 +30,7 @@ const PreviewTable: FC<IProps> = (props) => {
 		<ContentContainer
 			className='w-full' title='效果'
 			extra={
-				<ShowCode data={{ componentName, columns }}>
+				<ShowCode data={schema}>
 					<Button type='primary' disabled={isEmpty(columns)}>查看代码</Button>
 				</ShowCode>
 			}

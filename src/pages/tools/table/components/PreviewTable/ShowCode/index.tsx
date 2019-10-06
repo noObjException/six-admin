@@ -4,20 +4,17 @@ import copy from 'copy-to-clipboard'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 // @ts-ignore
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
-import { ITableTemp, getTsxTemp, getJsxTemp } from './code-template'
-import { IColumn } from 'components/SimpleTable'
+import { getTsxTemp, getJsxTemp } from './code-template'
+import { ITableForm } from '../../TableConfigForm'
 
 
-const codeHighlighter = (code: string) => <SyntaxHighlighter language='typescript' style={docco}>{code}</SyntaxHighlighter>
-
-export interface ITableTemp {
-  componentName?: string,
-  columns: IColumn[],
-}
+const codeHighlighter = (code: string) => <SyntaxHighlighter
+	language='typescript' style={docco}
+>{code}</SyntaxHighlighter>
 
 
 interface IProps {
-	data: ITableTemp,
+	data: ITableForm,
 }
 
 

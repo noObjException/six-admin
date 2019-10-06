@@ -1,14 +1,9 @@
-import { IColumn } from 'components/SimpleTable'
+import { ITableForm } from '../../TableConfigForm'
 
-
-export interface ITableTemp {
-	componentName?: string,
-	columns: IColumn[],
-}
 
 
 // tsx temp
-export const getTsxTemp = (props: ITableTemp): string => {
+export const getTsxTemp = (props: ITableForm): string => {
 	const types = {
 		string: 'string',
 		number: 'number',
@@ -37,6 +32,8 @@ const ${props.componentName || 'TableName'}: FC = () => {
     <SimpleTable 
       columns={columns}
       data={data}
+      showActions={${(props.show || false) && props.show.includes('actions')}}
+      showCheckbox={${(props.show || false) && props.show.includes('checkbox')}}
     />
   )
 } 
@@ -45,7 +42,7 @@ export default ${props.componentName || 'TableName'}`
 }
 
 // jsx temp
-export const getJsxTemp = (props: ITableTemp): string => (
+export const getJsxTemp = (props: ITableForm): string => (
 	`import React from 'react'
 import SimpleTable from 'components/SimpleTable'
 
@@ -56,8 +53,10 @@ const ${props.componentName || 'TableName'} = () => {
 
   return (
     <SimpleTable 
-      columns='{columns}' 
-      dataSoure='{data}'
+      columns={columns}
+      data={data}
+      showActions={${(props.show || false) && props.show.includes('actions')}}
+      showCheckbox={${(props.show || false) && props.show.includes('checkbox')}}
     />
   )
 } 

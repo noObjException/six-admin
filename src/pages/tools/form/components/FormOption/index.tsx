@@ -30,8 +30,6 @@ const FormOption: FC<IProps> = (props) => {
 	const [ rules, setRules ] = useState([])
 
 	const handleSubmit = (field: any) => {
-		console.log('o', field)
-
 		switch (field.type) {
 			case 'select':
 

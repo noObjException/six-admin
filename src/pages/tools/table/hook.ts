@@ -49,8 +49,6 @@ export const tableReducers = (state: ITableToolState, action: { type: string, pa
 export default function useTableToolState() {
 	const [ state, dispatch ] = useReducer(tableReducers, initState)
 
-	console.log('fields', state.fields)
-
 	return {
 		fields: state.fields,
 		addField: (payload: IColumn) => dispatch({ type: 'ADD_FIELD', payload }),
