@@ -1,40 +1,32 @@
-import React, { FC } from "react";
-import { Route, RouteComponentProps } from "react-router-dom";
-import { StaticContext } from "react-router";
-// import Products from "pages/product";
-// import Users from "pages/user";
-// import ProductCategory from "pages/product-category";
-import FormTool from "pages/tools/form";
-import TForm from "pages/test";
-import TableTool from '../../pages/tools/table'
+import React, { FC } from 'react'
+import { Route, RouteComponentProps } from 'react-router-dom'
+import { StaticContext } from 'react-router'
+import FormTool from 'pages/tools/form'
+import TForm from 'pages/test'
+import TableTool from 'pages/tools/table'
 
-const Index = () => <div>index</div>
 
 interface IRoute {
-  path: string,
-  name?: string,
-  exact?: boolean,
-  component?: React.ComponentClass<any, any> | React.FunctionComponent<any> | React.ComponentClass<RouteComponentProps<any, StaticContext, any>, any> | React.FunctionComponent<RouteComponentProps<any, StaticContext, any>> | undefined,
+	path: string,
+	name?: string,
+	exact?: boolean,
+	component?: React.ComponentClass<any, any> | React.FunctionComponent<any> | React.ComponentClass<RouteComponentProps<any, StaticContext, any>, any> | React.FunctionComponent<RouteComponentProps<any, StaticContext, any>> | undefined,
 }
 
 const routes: IRoute[] = [
-  { path: '/', component: Index },
-  // { path: '/products', component: Products },
-  // { path: '/product-categories', component: ProductCategory },
-  // { path: '/users', component: Users },
-  { path: '/tools/form', component: FormTool },
-  { path: '/tools/table', component: TableTool },
-  { path: '/test', component: TForm },
+	{ path: '/tools/form', component: FormTool },
+	{ path: '/tools/table', component: TableTool },
+	{ path: '/test', component: TForm },
 ]
 
 const Routes: FC = () => {
-  return (
-    <>
-      {routes.map(({ path, exact = true, component }, key) => (
-        <Route path={path} exact={exact} component={component} key={key} />
-      ))}
-    </>
-  )
+	return (
+		<>
+			{routes.map(({ path, exact = true, component }, key) => (
+				<Route path={path} exact={exact} component={component} key={key} />
+			))}
+		</>
+	)
 }
 
 export default Routes
